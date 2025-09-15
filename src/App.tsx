@@ -3,6 +3,12 @@ import { Login } from './components/Login';
 import { Layout } from './components/Layout';
 import { Dashboard } from './components/Dashboard';
 import { StudentManagement } from './components/StudentManagement';
+import { ClassManagement } from './components/ClassManagement';
+import { SubjectManagement } from './components/SubjectManagement';
+import { GradeManagement } from './components/GradeManagement';
+import { FeeManagement } from './components/FeeManagement';
+import { ReportManagement } from './components/ReportManagement';
+import { UserManagement } from './components/UserManagement';
 import { AuthService } from './utils/auth';
 
 function App() {
@@ -28,17 +34,17 @@ function App() {
       case 'students':
         return <StudentManagement />;
       case 'classes':
-        return <div className="text-center py-12 text-gray-500">Module Classes - En développement</div>;
+        return <ClassManagement />;
       case 'subjects':
-        return <div className="text-center py-12 text-gray-500">Module Matières - En développement</div>;
+        return <SubjectManagement />;
       case 'grades':
-        return <div className="text-center py-12 text-gray-500">Module Notes - En développement</div>;
+        return <GradeManagement />;
       case 'fees':
-        return <div className="text-center py-12 text-gray-500">Module Frais & Paiements - En développement</div>;
+        return <FeeManagement />;
       case 'reports':
-        return <div className="text-center py-12 text-gray-500">Module Rapports - En développement</div>;
+        return <ReportManagement />;
       case 'users':
-        return <div className="text-center py-12 text-gray-500">Module Utilisateurs - En développement</div>;
+        return <UserManagement />;
       default:
         return <Dashboard />;
     }
