@@ -122,7 +122,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
           <h4 className="text-sm font-medium text-blue-900 mb-2">Compte par défaut :</h4>
           <p className="text-xs text-blue-700">
             <strong>Utilisateur :</strong> admin<br />
-            <strong>Mot de passe :</strong> admin123
+            <strong>Mot de passe :</strong> 1108Mhd5390@
           </p>
         </div>
 
