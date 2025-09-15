@@ -39,7 +39,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </div>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Système de Gestion Scolaire
+            GESET PRO
           </h1>
           <p className="text-gray-600">Burkina Faso</p>
         </div>
