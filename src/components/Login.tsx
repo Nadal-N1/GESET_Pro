@@ -42,6 +42,8 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
             Système de Gestion Scolaire
           </h1>
           <p className="text-gray-600">Burkina Faso</p>
+       </h1>
+          <p className="text-2xl font-bold text-blue-1000 mb-2">GESET</p>
         </div>
 
         {/* Login Form */}
@@ -119,10 +121,9 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
         {/* Default Credentials Info */}
         <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <h4 className="text-sm font-medium text-blue-900 mb-2">Compte par défaut :</h4>
+          <h4 className="text-sm font-medium text-blue-900 mb-2">Assistance :</h4>
           <p className="text-xs text-blue-700">
-            <strong>Utilisateur :</strong> admin<br />
-            <strong>Mot de passe :</strong> 1108Mhd5390@
+          <strong>Mot de passe :</strong> premiumptoser@gmail.com
           </p>
         </div>
 
