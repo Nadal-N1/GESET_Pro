@@ -39,7 +39,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </div>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            GESET PRO
+            Système de Gestion Scolaire
           </h1>
           <p className="text-gray-600">Burkina Faso</p>
         </div>
@@ -127,7 +127,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
         {/* Footer */}
         <div className="mt-8 text-center text-xs text-gray-500">
-          <p>© 2025 - Système de Gestion Scolaire Burkina Faso</p>
+          <p>© 2025 - GESET - PREMIUM PRO</p>
         </div>
       </div>
     </div>
