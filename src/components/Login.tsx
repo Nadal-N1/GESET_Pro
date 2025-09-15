@@ -121,7 +121,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
         <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
           <h4 className="text-sm font-medium text-blue-900 mb-2">Assistance :</h4>
           <p className="text-xs text-blue-700">
-          </strong> premiumptoser@gmail.com
+          <strong>Email :</strong> premiumptoser@gmail.com
           </p>
         </div>
 
