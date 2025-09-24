@@ -1,9 +1,12 @@
 import React from 'react';
 import { Users, GraduationCap, BookOpen, DollarSign, TrendingUp, Calendar, Award, AlertCircle } from 'lucide-react';
 import { LocalStorage } from '../utils/storage';
+import { SchoolSettingsService } from '../utils/schoolSettings';
 import { Student, Class, Payment, User } from '../types';
 
 export const Dashboard: React.FC = () => {
+  const schoolSettings = SchoolSettingsService.getSettings();
+  
   // Récupération des données depuis le stockage local
   const students = LocalStorage.get<Student[]>('students') || [];
   const classes = LocalStorage.get<Class[]>('classes') || [];
@@ -69,9 +72,16 @@ export const Dashboard: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 text-white">
-        <h1 className="text-2xl font-bold mb-2">Tableau de Bord</h1>
+        <div className="flex items-center mb-2">
+          {schoolSettings.logo ? (
+            <img src={schoolSettings.logo} alt="Logo" className="h-8 w-8 object-contain mr-3" />
+          ) : (
+            <School className="h-8 w-8 mr-3" />
+          )}
+          <h1 className="text-2xl font-bold">Tableau de Bord - {schoolSettings.nomEtablissement}</h1>
+        </div>
         <p className="text-green-100">
-          Vue d'ensemble de votre établissement scolaire - Année scolaire {currentYear}-{currentYear + 1}
+          Vue d'ensemble de votre établissement scolaire - Année scolaire {schoolSettings.anneeScolaireActuelle}
         </p>
       </div>
 

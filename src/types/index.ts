@@ -92,3 +92,25 @@ export interface SchoolYear {
   trimestreActuel: 1 | 2 | 3;
   active: boolean;
 }
+
+export interface SchoolSettings {
+  id: string;
+  nomEtablissement: string;
+  typeEtablissement: 'primaire' | 'secondaire' | 'primaire_secondaire';
+  adresse: string;
+  ville: string;
+  region: string;
+  telephone: string;
+  email?: string;
+  siteWeb?: string;
+  numeroAutorisation: string;
+  dateCreation: Date;
+  directeur: string;
+  devise?: string;
+  logo?: string;
+  anneeScolaireActuelle: string;
+  trimestreActuel: 1 | 2 | 3;
+  couleurPrimaire: string;
+  couleurSecondaire: string;
+  updatedAt: Date;
+}

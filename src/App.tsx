@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Login } from './components/Login';
 import { Layout } from './components/Layout';
 import { Dashboard } from './components/Dashboard';
+import { SchoolSettings } from './components/SchoolSettings';
 import { StudentManagement } from './components/StudentManagement';
 import { ClassManagement } from './components/ClassManagement';
 import { SubjectManagement } from './components/SubjectManagement';
@@ -31,6 +32,8 @@ function App() {
     switch (currentModule) {
       case 'dashboard':
         return <Dashboard />;
+      case 'settings':
+        return <SchoolSettings />;
       case 'students':
         return <StudentManagement />;
       case 'classes':

@@ -1,6 +1,7 @@
 import React from 'react';
-import { User, LogOut, Users, GraduationCap, BookOpen, Calculator, FileText, Settings } from 'lucide-react';
+import { User, LogOut, Users, GraduationCap, BookOpen, Calculator, FileText, Settings, School } from 'lucide-react';
 import { AuthService } from '../utils/auth';
+import { SchoolSettingsService } from '../utils/schoolSettings';
 
 interface LayoutProps {
   currentModule: string;
@@ -10,6 +11,7 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ currentModule, onModuleChange, children }) => {
   const user = AuthService.getCurrentUser();
+  const schoolSettings = SchoolSettingsService.getSettings();
   
   const handleLogout = () => {
     AuthService.logout();
@@ -18,6 +20,7 @@ export const Layout: React.FC<LayoutProps> = ({ currentModule, onModuleChange, c
 
   const modules = [
     { id: 'dashboard', name: 'Tableau de Bord', icon: Settings, roles: ['administrateur', 'directeur', 'secretaire'] },
+    { id: 'settings', name: 'Configuration', icon: School, roles: ['administrateur', 'directeur'] },
     { id: 'students', name: 'Élèves', icon: Users, roles: ['administrateur', 'directeur', 'secretaire'] },
     { id: 'classes', name: 'Classes', icon: GraduationCap, roles: ['administrateur', 'directeur', 'secretaire'] },
     { id: 'subjects', name: 'Matières', icon: BookOpen, roles: ['administrateur', 'directeur', 'enseignant'] },
@@ -38,10 +41,14 @@ export const Layout: React.FC<LayoutProps> = ({ currentModule, onModuleChange, c
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <GraduationCap className="h-8 w-8 text-white" />
+              {schoolSettings.logo ? (
+                <img src={schoolSettings.logo} alt="Logo" className="h-8 w-8 object-contain" />
+              ) : (
+                <GraduationCap className="h-8 w-8 text-white" />
+              )}
               <div>
-                <h1 className="text-xl font-bold text-white">SGS - Burkina Faso</h1>
-                <p className="text-sm text-white/90">Système de Gestion Scolaire</p>
+                <h1 className="text-xl font-bold text-white">{schoolSettings.nomEtablissement}</h1>
+                <p className="text-sm text-white/90">{schoolSettings.ville} - {schoolSettings.region}</p>
               </div>
             </div>
             
