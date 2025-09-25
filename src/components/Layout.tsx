@@ -10,12 +10,29 @@ interface LayoutProps {
 }
 
 export const Layout: React.FC<LayoutProps> = ({ currentModule, onModuleChange, children }) => {
-  const user = AuthService.getCurrentUser();
-  const schoolSettings = SchoolSettingsService.getSettings();
+  const [user, setUser] = React.useState(AuthService.getCurrentUser());
+  const [schoolSettings, setSchoolSettings] = React.useState(SchoolSettingsService.getSettings());
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    try {
+      const currentUser = AuthService.getCurrentUser();
+      const settings = SchoolSettingsService.getSettings();
+      setUser(currentUser);
+      setSchoolSettings(settings);
+    } catch (err) {
+      console.error('Erreur lors du chargement des données:', err);
+      setError('Erreur de chargement');
+    }
+  }, [currentModule]);
   
   const handleLogout = () => {
-    AuthService.logout();
-    window.location.reload();
+    try {
+      AuthService.logout();
+      window.location.reload();
+    } catch (err) {
+      console.error('Erreur lors de la déconnexion:', err);
+    }
   };
 
   const modules = [
@@ -31,9 +48,33 @@ export const Layout: React.FC<LayoutProps> = ({ currentModule, onModuleChange, c
   ];
 
   const availableModules = modules.filter(module => 
-    module.roles.includes(user?.role || '')
+    user && module.roles.includes(user.role)
   );
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-red-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-red-900 mb-2">Erreur de chargement</h2>
+          <p className="text-red-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+          >
+            Recharger
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user || !schoolSettings) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -42,20 +83,31 @@ export const Layout: React.FC<LayoutProps> = ({ currentModule, onModuleChange, c
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               {schoolSettings.logo ? (
-                <img src={schoolSettings.logo} alt="Logo" className="h-8 w-8 object-contain" />
+                <img 
+                  src={schoolSettings.logo} 
+                  alt="Logo" 
+                  className="h-8 w-8 object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
               ) : (
                 <GraduationCap className="h-8 w-8 text-white" />
               )}
               <div>
-                <h1 className="text-xl font-bold text-white">{schoolSettings.nomEtablissement}</h1>
-                <p className="text-sm text-white/90">{schoolSettings.ville} - {schoolSettings.region}</p>
+                <h1 className="text-xl font-bold text-white">
+                  {schoolSettings.nomEtablissement || 'École'}
+                </h1>
+                <p className="text-sm text-white/90">
+                  {schoolSettings.ville || 'Ville'} - {schoolSettings.region || 'Région'}
+                </p>
               </div>
             </div>
             
             <div className="flex items-center space-x-4">
               <div className="text-right text-white">
-                <p className="text-sm font-medium">{user?.prenom} {user?.nom}</p>
-                <p className="text-xs text-white/80 capitalize">{user?.role}</p>
+                <p className="text-sm font-medium">{user.prenom} {user.nom}</p>
+                <p className="text-xs text-white/80 capitalize">{user.role}</p>
               </div>
               <button
                 onClick={handleLogout}
@@ -100,7 +152,9 @@ export const Layout: React.FC<LayoutProps> = ({ currentModule, onModuleChange, c
 
         {/* Main Content */}
         <main className="flex-1 p-6">
-          {children}
+          <div className="min-h-full">
+            {children}
+          </div>
         </main>
       </div>
     </div>

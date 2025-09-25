@@ -25,26 +25,40 @@ export class SchoolSettingsService {
   };
 
   static getSettings(): SchoolSettings {
-    const settings = LocalStorage.get<SchoolSettings>('schoolSettings');
-    if (!settings) {
-      this.initializeSettings();
+    try {
+      const settings = LocalStorage.get<SchoolSettings>('schoolSettings');
+      if (!settings) {
+        this.initializeSettings();
+        return this.defaultSettings;
+      }
+      return settings;
+    } catch (error) {
+      console.error('Erreur lors de la récupération des paramètres:', error);
       return this.defaultSettings;
     }
-    return settings;
   }
 
   static saveSettings(settings: SchoolSettings): void {
-    const updatedSettings = {
-      ...settings,
-      updatedAt: new Date()
-    };
-    LocalStorage.set('schoolSettings', updatedSettings);
+    try {
+      const updatedSettings = {
+        ...settings,
+        updatedAt: new Date()
+      };
+      LocalStorage.set('schoolSettings', updatedSettings);
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde des paramètres:', error);
+      throw error;
+    }
   }
 
   static initializeSettings(): void {
-    const existingSettings = LocalStorage.get<SchoolSettings>('schoolSettings');
-    if (!existingSettings) {
-      LocalStorage.set('schoolSettings', this.defaultSettings);
+    try {
+      const existingSettings = LocalStorage.get<SchoolSettings>('schoolSettings');
+      if (!existingSettings) {
+        LocalStorage.set('schoolSettings', this.defaultSettings);
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'initialisation des paramètres:', error);
     }
   }
 

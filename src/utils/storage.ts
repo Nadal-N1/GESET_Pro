@@ -8,6 +8,7 @@ export class LocalStorage {
       localStorage.setItem(this.prefix + key, serialized);
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error);
+      throw new Error('Impossible de sauvegarder les données');
     }
   }
 
@@ -22,26 +23,49 @@ export class LocalStorage {
   }
 
   static remove(key: string): void {
-    localStorage.removeItem(this.prefix + key);
+    try {
+      localStorage.removeItem(this.prefix + key);
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+    }
   }
 
   static clear(): void {
-    Object.keys(localStorage).forEach(key => {
-      if (key.startsWith(this.prefix)) {
-        localStorage.removeItem(key);
-      }
-    });
+    try {
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith(this.prefix)) {
+          localStorage.removeItem(key);
+        }
+      });
+    } catch (error) {
+      console.error('Erreur lors du nettoyage:', error);
+    }
   }
 
   static getAll<T>(pattern: string): T[] {
     const items: T[] = [];
-    Object.keys(localStorage).forEach(key => {
-      if (key.startsWith(this.prefix + pattern)) {
-        const item = this.get<T>(key.substring(this.prefix.length));
-        if (item) items.push(item);
-      }
-    });
+    try {
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith(this.prefix + pattern)) {
+          const item = this.get<T>(key.substring(this.prefix.length));
+          if (item) items.push(item);
+        }
+      });
+    } catch (error) {
+      console.error('Erreur lors de la récupération:', error);
+    }
     return items;
+  }
+
+  static isAvailable(): boolean {
+    try {
+      const test = '__localStorage_test__';
+      localStorage.setItem(test, 'test');
+      localStorage.removeItem(test);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
 
