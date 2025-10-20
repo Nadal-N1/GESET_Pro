@@ -379,14 +379,31 @@ export const SchoolSettings: React.FC = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Logo de l'établissement</label>
               <input
-                type="url"
-                value={settings.logo}
-                onChange={(e) => handleInputChange('logo', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="URL du logo (optionnel)"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      handleInputChange('logo', reader.result as string);
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
               />
+              {settings.logo && (
+                <button
+                  type="button"
+                  onClick={() => handleInputChange('logo', '')}
+                  className="mt-2 text-xs text-red-600 hover:text-red-800"
+                >
+                  Supprimer le logo
+                </button>
+              )}
               <p className="text-xs text-gray-500 mt-1">
-                Vous pouvez utiliser une URL d'image ou laisser vide pour utiliser l'icône par défaut
+                Sélectionnez une image depuis votre galerie (formats: JPG, PNG, etc.)
               </p>
             </div>
           </div>
