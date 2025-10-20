@@ -1,0 +1,232 @@
+================================================================================
+                     GESET PRO - SYSTÈME DE GESTION SCOLAIRE
+                              Guide d'Installation Rapide
+================================================================================
+
+BIENVENUE !
+
+Merci d'avoir choisi GESET Pro pour la gestion de votre établissement scolaire.
+Ce fichier vous guide pour une installation rapide.
+
+================================================================================
+PRÉREQUIS
+================================================================================
+
+1. Node.js version 18 ou supérieure
+   Télécharger : https://nodejs.org/
+
+2. Un navigateur moderne (Chrome, Firefox, Edge, Safari)
+
+3. Connexion Internet (pour l'installation initiale)
+
+================================================================================
+INSTALLATION RAPIDE
+================================================================================
+
+WINDOWS :
+---------
+1. Double-cliquer sur "setup.bat"
+2. Attendre la fin de l'installation
+3. Taper : npm run dev
+4. Ouvrir http://localhost:5173 dans votre navigateur
+
+MAC / LINUX :
+-------------
+1. Ouvrir le Terminal
+2. Naviguer vers le dossier du projet
+3. Taper : chmod +x setup.sh
+4. Taper : ./setup.sh
+5. Taper : npm run dev
+6. Ouvrir http://localhost:5173 dans votre navigateur
+
+INSTALLATION MANUELLE :
+-----------------------
+1. Ouvrir un terminal dans le dossier du projet
+2. Taper : npm install
+3. Taper : npm run dev
+4. Ouvrir http://localhost:5173 dans votre navigateur
+
+================================================================================
+PREMIÈRE CONNEXION
+================================================================================
+
+Identifiants par défaut :
+  Username : admin
+  Password : admin123
+
+⚠️ IMPORTANT : Changez ce mot de passe immédiatement après la première connexion !
+
+================================================================================
+DOCUMENTATION DISPONIBLE
+================================================================================
+
+README.md               - Guide complet du projet
+QUICK_START.md          - Démarrage rapide (5 minutes)
+INSTALLATION.md         - Installation détaillée pas à pas
+DEPLOYMENT_GUIDE.md     - Guide de déploiement en production
+SUPABASE_SETUP_GUIDE.md - Configuration de la base de données
+ERROR_PREVENTION_GUIDE.md - Système de prévention des erreurs
+ZERO_ERROR_CONFIGURATION.md - Architecture de sécurité
+
+================================================================================
+COMMANDES PRINCIPALES
+================================================================================
+
+npm run dev      - Lancer l'application en mode développement
+npm run build    - Créer un build de production
+npm run preview  - Tester le build de production
+
+================================================================================
+CONFIGURATION INITIALE
+================================================================================
+
+Après la première connexion, suivez ces étapes :
+
+1. Paramètres de l'École
+   Menu > Paramètres > Paramètres de l'École
+   - Renseigner les informations
+   - Uploader le logo
+   - Choisir les couleurs
+
+2. Créer les Classes
+   Menu > Classes > + Nouvelle Classe
+   - Créer toutes vos classes
+
+3. Créer les Matières
+   Menu > Matières > + Nouvelle Matière
+   - Créer toutes vos matières avec coefficients
+
+4. Ajouter les Enseignants
+   Menu > Enseignants > + Nouvel Enseignant
+
+5. Inscrire les Élèves
+   Menu > Élèves > + Nouvel Élève
+
+================================================================================
+FONCTIONNALITÉS PRINCIPALES
+================================================================================
+
+✓ Gestion complète des élèves
+✓ Gestion des enseignants
+✓ Gestion des classes (Maternelle, Primaire, Secondaire)
+✓ Gestion des matières avec coefficients
+✓ Enregistrement des notes par trimestre
+✓ Génération automatique de bulletins PDF
+✓ Gestion des frais scolaires
+✓ Enregistrement des paiements avec reçus
+✓ Tableaux de bord et statistiques
+✓ Multi-utilisateurs avec rôles
+✓ Fonctionne hors ligne
+✓ Synchronisation automatique
+
+================================================================================
+SUPPORT ET AIDE
+================================================================================
+
+En cas de problème :
+
+1. Consultez les fichiers de documentation (voir liste ci-dessus)
+
+2. Vérifiez que Node.js est bien installé :
+   node --version
+   (doit afficher v18.0.0 ou supérieur)
+
+3. Vérifiez que les dépendances sont installées :
+   npm install
+
+4. Consultez les logs dans la console du navigateur (Touche F12)
+
+5. Vérifiez la connexion Internet (pour Supabase)
+   L'application fonctionne aussi hors ligne avec localStorage
+
+================================================================================
+PROBLÈMES COURANTS
+================================================================================
+
+Problème : "npm: command not found"
+Solution : Installer Node.js depuis https://nodejs.org/
+
+Problème : "Port 5173 is already in use"
+Solution : npm run dev -- --port 3000
+
+Problème : "Cannot find module"
+Solution : rm -rf node_modules && npm install
+
+Problème : Page blanche
+Solution : Vérifier la console (F12) et le fichier .env
+
+================================================================================
+DONNÉES DE TEST
+================================================================================
+
+Un fichier de données de test est disponible : sample-data.sql
+
+Pour l'utiliser :
+1. Créer un compte Supabase (gratuit)
+2. Créer un nouveau projet
+3. Exécuter supabase/migrations/001_create_school_management_schema.sql
+4. Exécuter sample-data.sql
+5. Vous aurez des classes, matières et enseignants de test
+
+================================================================================
+SÉCURITÉ
+================================================================================
+
+✓ Validation de toutes les entrées
+✓ Protection contre les injections
+✓ Row Level Security (RLS) activé
+✓ Gestion centralisée des erreurs
+✓ HTTPS obligatoire en production
+
+⚠️ CHANGEZ le mot de passe admin par défaut
+⚠️ Ne partagez JAMAIS votre fichier .env
+⚠️ Faites des backups réguliers
+
+================================================================================
+DÉPLOIEMENT EN PRODUCTION
+================================================================================
+
+Pour mettre en ligne votre application :
+
+Option Recommandée : Netlify (Gratuit et Simple)
+1. Créer un build : npm run build
+2. Aller sur netlify.com
+3. Glisser-déposer le dossier dist/
+4. Configurer les variables d'environnement
+
+Voir DEPLOYMENT_GUIDE.md pour plus de détails.
+
+================================================================================
+LICENCE ET SUPPORT
+================================================================================
+
+© 2024 GESET Pro - Tous droits réservés
+
+Pour toute question ou assistance :
+- Consultez la documentation complète
+- Vérifiez les guides d'installation
+- Contactez votre fournisseur
+
+================================================================================
+CHECKLIST DE DÉMARRAGE
+================================================================================
+
+□ Node.js installé (v18+)
+□ Dépendances installées (npm install)
+□ Application lancée (npm run dev)
+□ Connexion réussie (admin/admin123)
+□ Mot de passe changé
+□ Paramètres école configurés
+□ Classes créées
+□ Matières créées
+□ Prêt à utiliser ! ✓
+
+================================================================================
+
+Merci d'utiliser GESET Pro !
+
+Pour démarrer : Ouvrez un terminal et tapez "npm run dev"
+
+Bon usage ! 📚
+
+================================================================================
