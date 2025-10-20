@@ -48,6 +48,15 @@ export const TeacherManagement: React.FC = () => {
     'Autre'
   ];
 
+  const matieresSuggestions = [
+    'Français', 'Mathématiques', 'Histoire-Géographie', 'Sciences Physiques',
+    'Sciences de la Vie et de la Terre', 'Anglais', 'Allemand', 'Espagnol',
+    'Philosophie', 'Éducation Physique et Sportive', 'Arts Plastiques',
+    'Musique', 'Informatique', 'Économie', 'Comptabilité', 'Droit',
+    'Éducation Civique et Morale', 'Travaux Pratiques', 'Technologie',
+    'Éveil', 'Graphisme', 'Motricité'
+  ];
+
   useEffect(() => {
     loadData();
   }, []);
@@ -388,16 +397,16 @@ export const TeacherManagement: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Matières enseignées
               </label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {subjects.map(subject => (
-                  <label key={subject.id} className="flex items-center space-x-2">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3">
+                {matieresSuggestions.map(matiere => (
+                  <label key={matiere} className="flex items-center space-x-2 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={formData.matieres?.includes(subject.nom) || false}
-                      onChange={(e) => handleMatiereChange(subject.nom, e.target.checked)}
+                      checked={formData.matieres?.includes(matiere) || false}
+                      onChange={(e) => handleMatiereChange(matiere, e.target.checked)}
                       className="rounded border-gray-300 text-green-600 focus:ring-green-500"
                     />
-                    <span className="text-sm text-gray-700">{subject.nom}</span>
+                    <span className="text-sm text-gray-700">{matiere}</span>
                   </label>
                 ))}
               </div>
