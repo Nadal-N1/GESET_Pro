@@ -493,29 +493,20 @@ export const SubjectManagement: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Matières enseignées
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Spécialité / Matières enseignées
                     </label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3">
-                      {matieresSuggestions.map(matiere => (
-                        <label key={matiere} className="flex items-center space-x-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={teacherFormData.matieres?.includes(matiere) || false}
-                            onChange={(e) => {
-                              const currentMatieres = teacherFormData.matieres || [];
-                              if (e.target.checked) {
-                                setTeacherFormData({...teacherFormData, matieres: [...currentMatieres, matiere]});
-                              } else {
-                                setTeacherFormData({...teacherFormData, matieres: currentMatieres.filter(m => m !== matiere)});
-                              }
-                            }}
-                            className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                          />
-                          <span className="text-sm text-gray-700">{matiere}</span>
-                        </label>
-                      ))}
-                    </div>
+                    <textarea
+                      value={teacherFormData.matieres?.join(', ') || ''}
+                      onChange={(e) => {
+                        const matieres = e.target.value.split(',').map(m => m.trim()).filter(m => m);
+                        setTeacherFormData({...teacherFormData, matieres});
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="Ex: Mathématiques, Physique, Chimie"
+                      rows={3}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Séparez les matières par des virgules</p>
                   </div>
 
                   <div className="flex justify-end space-x-3 pt-4">
