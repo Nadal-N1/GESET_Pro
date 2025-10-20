@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, BookOpen, User } from 'lucide-react';
-import { Subject, User as UserType, NiveauType, ClasseNiveau } from '../types';
+import { Plus, Search, Edit, Trash2, BookOpen, User, UserPlus } from 'lucide-react';
+import { Subject, User as UserType, Teacher, NiveauType, ClasseNiveau } from '../types';
 import { LocalStorage, Generators } from '../utils/storage';
 
 export const SubjectManagement: React.FC = () => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [users, setUsers] = useState<UserType[]>([]);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNiveauType, setSelectedNiveauType] = useState<NiveauType | ''>('');
   const [showForm, setShowForm] = useState(false);
+  const [showTeacherModal, setShowTeacherModal] = useState(false);
   const [editingSubject, setEditingSubject] = useState<Subject | null>(null);
 
   const [formData, setFormData] = useState<Partial<Subject>>({
@@ -17,6 +19,28 @@ export const SubjectManagement: React.FC = () => {
     niveauxType: [],
     niveaux: [],
     enseignantId: ''
+  });
+
+  const [teacherFormData, setTeacherFormData] = useState<Partial<Teacher>>({
+    nom: '',
+    prenom: '',
+    dateNaissance: new Date(),
+    lieuNaissance: '',
+    sexe: 'M',
+    adresse: '',
+    telephone: '',
+    email: '',
+    diplome: '',
+    specialite: '',
+    niveauxType: [],
+    matieres: [],
+    dateRecrutement: new Date(),
+    situationMatrimoniale: 'celibataire',
+    nombreEnfants: 0,
+    personneUrgence: '',
+    telephoneUrgence: '',
+    statut: 'actif',
+    photo: ''
   });
 
   const niveauxConfig = {
@@ -34,6 +58,10 @@ export const SubjectManagement: React.FC = () => {
     'Éveil', 'Graphisme', 'Motricité'
   ];
 
+  const diplomesOptions = [
+    'BEPC', 'BAC', 'Licence', 'Master', 'Doctorat', 'CAP', 'BEP', 'BTS', 'DUT', 'Autre'
+  ];
+
   useEffect(() => {
     loadData();
   }, []);
@@ -41,8 +69,56 @@ export const SubjectManagement: React.FC = () => {
   const loadData = () => {
     const storedSubjects = LocalStorage.get<Subject[]>('subjects') || [];
     const storedUsers = LocalStorage.get<UserType[]>('users') || [];
+    const storedTeachers = LocalStorage.get<Teacher[]>('teachers') || [];
     setSubjects(storedSubjects);
     setUsers(storedUsers);
+    setTeachers(storedTeachers);
+  };
+
+  const saveTeacher = () => {
+    if (!teacherFormData.nom || !teacherFormData.prenom || !teacherFormData.telephone || !teacherFormData.diplome) {
+      alert('Veuillez remplir tous les champs obligatoires');
+      return;
+    }
+
+    const currentYear = new Date().getFullYear();
+    const teacherCode = `ENS${currentYear}`;
+    const sequence = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
+    const matricule = `${teacherCode}${sequence}`;
+
+    const teacherId = Generators.generateId();
+    const teacherData: Teacher = {
+      id: teacherId,
+      matricule,
+      ...teacherFormData as Teacher
+    };
+
+    const username = `${teacherFormData.nom?.toLowerCase()}.${teacherFormData.prenom?.toLowerCase()}`;
+    const userData: UserType = {
+      id: Generators.generateId(),
+      username,
+      password: 'password123',
+      role: 'enseignant',
+      nom: teacherFormData.nom!,
+      prenom: teacherFormData.prenom!,
+      email: teacherFormData.email,
+      telephone: teacherFormData.telephone!,
+      createdAt: new Date()
+    };
+
+    teacherData.userId = userData.id;
+
+    const updatedTeachers = [...teachers, teacherData];
+    const updatedUsers = [...users, userData];
+
+    setTeachers(updatedTeachers);
+    setUsers(updatedUsers);
+    LocalStorage.set('teachers', updatedTeachers);
+    LocalStorage.set('users', updatedUsers);
+
+    setFormData({ ...formData, enseignantId: userData.id });
+    resetTeacherForm();
+    loadData();
   };
 
   const saveSubject = () => {
@@ -86,6 +162,31 @@ export const SubjectManagement: React.FC = () => {
     });
     setEditingSubject(null);
     setShowForm(false);
+  };
+
+  const resetTeacherForm = () => {
+    setTeacherFormData({
+      nom: '',
+      prenom: '',
+      dateNaissance: new Date(),
+      lieuNaissance: '',
+      sexe: 'M',
+      adresse: '',
+      telephone: '',
+      email: '',
+      diplome: '',
+      specialite: '',
+      niveauxType: [],
+      matieres: [],
+      dateRecrutement: new Date(),
+      situationMatrimoniale: 'celibataire',
+      nombreEnfants: 0,
+      personneUrgence: '',
+      telephoneUrgence: '',
+      statut: 'actif',
+      photo: ''
+    });
+    setShowTeacherModal(false);
   };
 
   const editSubject = (subject: Subject) => {
@@ -135,7 +236,7 @@ export const SubjectManagement: React.FC = () => {
     return teacher ? `${teacher.prenom} ${teacher.nom}` : 'Non trouvé';
   };
 
-  const teachers = users.filter(u => u.role === 'enseignant');
+  const teacherUsers = users.filter(u => u.role === 'enseignant');
 
   if (showForm) {
     return (
@@ -185,18 +286,29 @@ export const SubjectManagement: React.FC = () => {
 
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Enseignant</label>
-                <select
-                  value={formData.enseignantId}
-                  onChange={(e) => setFormData({...formData, enseignantId: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="">Sélectionner un enseignant</option>
-                  {teachers.map(teacher => (
-                    <option key={teacher.id} value={teacher.id}>
-                      {teacher.prenom} {teacher.nom}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex space-x-2">
+                  <select
+                    value={formData.enseignantId}
+                    onChange={(e) => setFormData({...formData, enseignantId: e.target.value})}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="">Sélectionner un enseignant</option>
+                    {teacherUsers.map(teacher => (
+                      <option key={teacher.id} value={teacher.id}>
+                        {teacher.prenom} {teacher.nom}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => setShowTeacherModal(true)}
+                    className="flex items-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    title="Ajouter un nouvel enseignant"
+                  >
+                    <UserPlus className="h-4 w-4" />
+                    <span className="hidden sm:inline">Nouveau</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -264,6 +376,116 @@ export const SubjectManagement: React.FC = () => {
             </div>
           </form>
         </div>
+
+        {showTeacherModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+                <h3 className="text-lg font-semibold text-gray-900">Nouvel Enseignant</h3>
+              </div>
+
+              <div className="p-6">
+                <form onSubmit={(e) => { e.preventDefault(); saveTeacher(); }} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Nom <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={teacherFormData.nom}
+                        onChange={(e) => setTeacherFormData({...teacherFormData, nom: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Prénom <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={teacherFormData.prenom}
+                        onChange={(e) => setTeacherFormData({...teacherFormData, prenom: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Téléphone <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        value={teacherFormData.telephone}
+                        onChange={(e) => setTeacherFormData({...teacherFormData, telephone: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="+226 XX XX XX XX"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                      <input
+                        type="email"
+                        value={teacherFormData.email}
+                        onChange={(e) => setTeacherFormData({...teacherFormData, email: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Diplôme <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        value={teacherFormData.diplome}
+                        onChange={(e) => setTeacherFormData({...teacherFormData, diplome: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        required
+                      >
+                        <option value="">Sélectionner</option>
+                        {diplomesOptions.map(diplome => (
+                          <option key={diplome} value={diplome}>{diplome}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Spécialité</label>
+                      <input
+                        type="text"
+                        value={teacherFormData.specialite}
+                        onChange={(e) => setTeacherFormData({...teacherFormData, specialite: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Ex: Mathématiques"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end space-x-3 pt-4">
+                    <button
+                      type="button"
+                      onClick={resetTeacherForm}
+                      className="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
+                    >
+                      Annuler
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                    >
+                      Créer l'enseignant
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
