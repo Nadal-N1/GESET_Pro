@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, DollarSign, Receipt, CreditCard } from 'lucide-react';
-import { Fee, Payment, Student, Class } from '../types';
+import { Plus, Search, Edit, Trash2, DollarSign, Receipt, CreditCard, Eye, Printer } from 'lucide-react';
+import { Fee, Payment, Student, Class, User } from '../types';
 import { LocalStorage, Generators } from '../utils/storage';
 import { AuthService } from '../utils/auth';
+import { PaymentReceipt } from './PaymentReceipt';
 
 export const FeeManagement: React.FC = () => {
   const [fees, setFees] = useState<Fee[]>([]);
@@ -16,6 +17,7 @@ export const FeeManagement: React.FC = () => {
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [editingFee, setEditingFee] = useState<Fee | null>(null);
   const [editingPayment, setEditingPayment] = useState<Payment | null>(null);
+  const [viewingReceipt, setViewingReceipt] = useState<Payment | null>(null);
 
   const [feeFormData, setFeeFormData] = useState<Partial<Fee>>({
     nom: '',
@@ -632,14 +634,23 @@ export const FeeManagement: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex space-x-2">
                           <button
+                            onClick={() => setViewingReceipt(payment)}
+                            className="text-green-600 hover:text-green-900"
+                            title="Voir le reçu"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+                          <button
                             onClick={() => editPayment(payment)}
                             className="text-blue-600 hover:text-blue-900"
+                            title="Modifier"
                           >
                             <Edit className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => deletePayment(payment.id)}
                             className="text-red-600 hover:text-red-900"
+                            title="Supprimer"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -673,6 +684,26 @@ export const FeeManagement: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Modal de visualisation du reçu */}
+      {viewingReceipt && (() => {
+        const student = students.find(s => s.id === viewingReceipt.eleveId);
+        const fee = fees.find(f => f.id === viewingReceipt.fraisId);
+        const user = AuthService.getCurrentUser();
+
+        if (student && fee && user) {
+          return (
+            <PaymentReceipt
+              payment={viewingReceipt}
+              student={student}
+              fee={fee}
+              user={user}
+              onClose={() => setViewingReceipt(null)}
+            />
+          );
+        }
+        return null;
+      })()}
     </div>
   );
 };
