@@ -10,6 +10,7 @@ import { GradeManagement } from './components/GradeManagement';
 import { FeeManagement } from './components/FeeManagement';
 import { ReportManagement } from './components/ReportManagement';
 import { UserManagement } from './components/UserManagement';
+import { TeacherManagement } from './components/TeacherManagement';
 import { AuthService } from './utils/auth';
 import { SchoolSettingsService } from './utils/schoolSettings';
 
@@ -62,6 +63,8 @@ function App() {
           return <ReportManagement />;
         case 'users':
           return <UserManagement />;
+        case 'teachers':
+          return <TeacherManagement />;
         default:
           return <Dashboard />;
       }

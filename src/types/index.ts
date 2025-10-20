@@ -11,6 +11,31 @@ export interface User {
   lastLogin?: Date;
 }
 
+export interface Teacher {
+  id: string;
+  matricule: string;
+  nom: string;
+  prenom: string;
+  dateNaissance: Date;
+  lieuNaissance: string;
+  sexe: 'M' | 'F';
+  adresse: string;
+  telephone: string;
+  email?: string;
+  diplome: string;
+  specialite: string;
+  niveauxType: NiveauType[];
+  matieres: string[];
+  dateRecrutement: Date;
+  situationMatrimoniale: 'celibataire' | 'marie' | 'divorce' | 'veuf';
+  nombreEnfants?: number;
+  personneUrgence: string;
+  telephoneUrgence: string;
+  statut: 'actif' | 'conge' | 'suspendu' | 'demissionnaire';
+  photo?: string;
+  userId?: string;
+}
+
 export interface Student {
   id: string;
   matricule: string;

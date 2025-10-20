@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, LogOut, Users, GraduationCap, BookOpen, Calculator, FileText, Settings, School } from 'lucide-react';
+import { User, LogOut, Users, GraduationCap, BookOpen, Calculator, FileText, Settings, School, UserCheck } from 'lucide-react';
 import { AuthService } from '../utils/auth';
 import { SchoolSettingsService } from '../utils/schoolSettings';
 
@@ -39,6 +39,7 @@ export const Layout: React.FC<LayoutProps> = ({ currentModule, onModuleChange, c
     { id: 'dashboard', name: 'Tableau de Bord', icon: Settings, roles: ['administrateur', 'directeur', 'secretaire'] },
     { id: 'settings', name: 'Configuration', icon: School, roles: ['administrateur', 'directeur'] },
     { id: 'students', name: 'Élèves', icon: Users, roles: ['administrateur', 'directeur', 'secretaire'] },
+    { id: 'teachers', name: 'Enseignants', icon: UserCheck, roles: ['administrateur', 'directeur', 'secretaire'] },
     { id: 'classes', name: 'Classes', icon: GraduationCap, roles: ['administrateur', 'directeur', 'secretaire'] },
     { id: 'subjects', name: 'Matières', icon: BookOpen, roles: ['administrateur', 'directeur', 'enseignant'] },
     { id: 'grades', name: 'Notes', icon: FileText, roles: ['administrateur', 'directeur', 'enseignant', 'secretaire'] },
