@@ -1,12 +1,12 @@
 import React from 'react';
-import { Users, GraduationCap, BookOpen, DollarSign, TrendingUp, Calendar, Award, AlertCircle } from 'lucide-react';
+import { Users, GraduationCap, BookOpen, DollarSign, TrendingUp, Calendar, Award, AlertCircle, School } from 'lucide-react';
 import { LocalStorage } from '../utils/storage';
 import { SchoolSettingsService } from '../utils/schoolSettings';
 import { Student, Class, Payment, User } from '../types';
 
 export const Dashboard: React.FC = () => {
   const schoolSettings = SchoolSettingsService.getSettings();
-  
+
   // Récupération des données depuis le stockage local
   const students = LocalStorage.get<Student[]>('students') || [];
   const classes = LocalStorage.get<Class[]>('classes') || [];
