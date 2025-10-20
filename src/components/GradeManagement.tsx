@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Search, Edit, Trash2, FileText, Calculator, Download } from 'lucide-react';
 import { Grade, Student, Subject, Class } from '../types';
 import { LocalStorage, Generators } from '../utils/storage';
+import { SchoolSettingsService } from '../utils/schoolSettings';
+import { jsPDF } from 'jspdf';
 
 export const GradeManagement: React.FC = () => {
   const [grades, setGrades] = useState<Grade[]>([]);
@@ -147,41 +149,144 @@ export const GradeManagement: React.FC = () => {
       return classe && s.niveaux.includes(classe.niveau);
     });
 
-    let bulletinData = `Bulletin - ${getClassName(selectedClass)} - Trimestre ${selectedTrimester}\n\n`;
-    
-    classStudents.forEach(student => {
-      bulletinData += `Élève: ${student.prenom} ${student.nom} (${student.matricule})\n`;
-      bulletinData += `${'='.repeat(50)}\n`;
-      
+    const schoolSettings = SchoolSettingsService.getSettings();
+    const doc = new jsPDF();
+
+    classStudents.forEach((student, studentIndex) => {
+      if (studentIndex > 0) {
+        doc.addPage();
+      }
+
+      let yPosition = 20;
+
+      if (schoolSettings.logo) {
+        try {
+          doc.addImage(schoolSettings.logo, 'PNG', 15, yPosition, 30, 30);
+        } catch (e) {
+          console.log('Logo non chargé');
+        }
+      }
+
+      doc.setFontSize(18);
+      doc.setFont('helvetica', 'bold');
+      doc.text(schoolSettings.nomEtablissement, 105, yPosition + 10, { align: 'center' });
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      if (schoolSettings.adresse) {
+        doc.text(`${schoolSettings.adresse}, ${schoolSettings.ville}`, 105, yPosition + 17, { align: 'center' });
+      }
+      if (schoolSettings.telephone) {
+        doc.text(`Tél: ${schoolSettings.telephone}`, 105, yPosition + 22, { align: 'center' });
+      }
+
+      yPosition += 35;
+      doc.setLineWidth(0.5);
+      doc.line(15, yPosition, 195, yPosition);
+
+      yPosition += 10;
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('BULLETIN DE NOTES', 105, yPosition, { align: 'center' });
+
+      yPosition += 7;
+      doc.setFontSize(12);
+      doc.text(`${getClassName(selectedClass)} - Trimestre ${selectedTrimester}`, 105, yPosition, { align: 'center' });
+      doc.text(`Année scolaire: ${schoolSettings.anneeScolaireActuelle}`, 105, yPosition + 6, { align: 'center' });
+
+      yPosition += 15;
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Informations de l\'élève:', 15, yPosition);
+
+      yPosition += 6;
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Nom: ${student.nom}`, 15, yPosition);
+      doc.text(`Prénom: ${student.prenom}`, 105, yPosition);
+
+      yPosition += 6;
+      doc.text(`Matricule: ${student.matricule}`, 15, yPosition);
+      doc.text(`Date de naissance: ${new Date(student.dateNaissance).toLocaleDateString('fr-FR')}`, 105, yPosition);
+
+      yPosition += 10;
+      doc.setFont('helvetica', 'bold');
+      doc.text('Résultats scolaires:', 15, yPosition);
+
+      yPosition += 8;
+      doc.setFillColor(schoolSettings.couleurPrimaire || '#059669');
+      doc.rect(15, yPosition - 5, 180, 8, 'F');
+
+      doc.setTextColor(255, 255, 255);
+      doc.text('Matière', 20, yPosition);
+      doc.text('Coef', 120, yPosition);
+      doc.text('Moyenne', 160, yPosition);
+
+      yPosition += 5;
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'normal');
+
       let totalPoints = 0;
       let totalCoefficients = 0;
-      
+
       classSubjects.forEach(subject => {
         const average = calculateAverage(student.id, subject.id, selectedTrimester);
-        const displayAverage = average || 'Non noté';
-        bulletinData += `${subject.nom.padEnd(25)} | Coef: ${subject.coefficient} | Moyenne: ${displayAverage}\n`;
-        
+        const displayAverage = average || 'N/A';
+
+        if (yPosition > 260) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        doc.text(subject.nom.substring(0, 40), 20, yPosition);
+        doc.text(subject.coefficient.toString(), 125, yPosition);
+        doc.text(displayAverage.toString(), 165, yPosition);
+
         if (average) {
           totalPoints += parseFloat(average) * subject.coefficient;
           totalCoefficients += subject.coefficient;
         }
+
+        yPosition += 6;
       });
-      
-      const generalAverage = totalCoefficients > 0 ? (totalPoints / totalCoefficients).toFixed(2) : 'Non calculé';
-      bulletinData += `${'-'.repeat(50)}\n`;
-      bulletinData += `Moyenne générale: ${generalAverage}\n\n`;
+
+      const generalAverage = totalCoefficients > 0 ? (totalPoints / totalCoefficients).toFixed(2) : 'N/A';
+
+      yPosition += 5;
+      doc.setLineWidth(0.5);
+      doc.line(15, yPosition, 195, yPosition);
+
+      yPosition += 8;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text('MOYENNE GÉNÉRALE:', 20, yPosition);
+      doc.text(`${generalAverage}/20`, 165, yPosition);
+
+      yPosition += 10;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+
+      let appreciation = '';
+      const avg = parseFloat(generalAverage);
+      if (avg >= 16) appreciation = 'Excellent travail';
+      else if (avg >= 14) appreciation = 'Très bien';
+      else if (avg >= 12) appreciation = 'Bien';
+      else if (avg >= 10) appreciation = 'Assez bien';
+      else if (avg >= 8) appreciation = 'Passable';
+      else appreciation = 'Insuffisant';
+
+      doc.text(`Appréciation: ${appreciation}`, 20, yPosition);
+
+      yPosition += 15;
+      doc.text(`Le Directeur`, 140, yPosition);
+      if (schoolSettings.directeur) {
+        doc.text(schoolSettings.directeur, 140, yPosition + 15);
+      }
+
+      doc.setFontSize(8);
+      doc.text(`Document généré le ${new Date().toLocaleDateString('fr-FR')}`, 105, 285, { align: 'center' });
     });
 
-    // Créer un blob et télécharger
-    const blob = new Blob([bulletinData], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `bulletin_${getClassName(selectedClass)}_T${selectedTrimester}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    doc.save(`bulletin_${getClassName(selectedClass)}_T${selectedTrimester}.pdf`);
   };
 
   const classStudents = students.filter(s => selectedClass === '' || s.classeId === selectedClass);
