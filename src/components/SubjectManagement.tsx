@@ -466,6 +466,58 @@ export const SubjectManagement: React.FC = () => {
                     </div>
                   </div>
 
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      Niveaux d'enseignement
+                    </label>
+                    <div className="grid grid-cols-3 gap-3">
+                      {(Object.keys(niveauxConfig) as NiveauType[]).map(niveauType => (
+                        <label key={niveauType} className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={teacherFormData.niveauxType?.includes(niveauType) || false}
+                            onChange={(e) => {
+                              const currentNiveauxType = teacherFormData.niveauxType || [];
+                              if (e.target.checked) {
+                                setTeacherFormData({...teacherFormData, niveauxType: [...currentNiveauxType, niveauType]});
+                              } else {
+                                setTeacherFormData({...teacherFormData, niveauxType: currentNiveauxType.filter(n => n !== niveauType)});
+                              }
+                            }}
+                            className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                          />
+                          <span className="text-sm text-gray-700">{niveauType}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      Matières enseignées
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3">
+                      {matieresSuggestions.map(matiere => (
+                        <label key={matiere} className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={teacherFormData.matieres?.includes(matiere) || false}
+                            onChange={(e) => {
+                              const currentMatieres = teacherFormData.matieres || [];
+                              if (e.target.checked) {
+                                setTeacherFormData({...teacherFormData, matieres: [...currentMatieres, matiere]});
+                              } else {
+                                setTeacherFormData({...teacherFormData, matieres: currentMatieres.filter(m => m !== matiere)});
+                              }
+                            }}
+                            className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                          />
+                          <span className="text-sm text-gray-700">{matiere}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="flex justify-end space-x-3 pt-4">
                     <button
                       type="button"
