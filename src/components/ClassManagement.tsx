@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, Edit, Trash2, Users, GraduationCap, User } from 'lucide-react';
-import { Class, User as UserType } from '../types';
+import { Class, User as UserType, NiveauType, ClasseNiveau } from '../types';
 import { LocalStorage, Generators } from '../utils/storage';
 
 export const ClassManagement: React.FC = () => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [users, setUsers] = useState<UserType[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedNiveau, setSelectedNiveau] = useState('');
+  const [selectedNiveauType, setSelectedNiveauType] = useState<NiveauType | ''>('');
   const [showForm, setShowForm] = useState(false);
   const [editingClass, setEditingClass] = useState<Class | null>(null);
 
   const [formData, setFormData] = useState<Partial<Class>>({
     nom: '',
-    niveau: '',
+    niveauType: undefined,
+    niveau: undefined,
     section: '',
     filiere: '',
     serie: '',
@@ -22,18 +23,16 @@ export const ClassManagement: React.FC = () => {
     anneeScolaire: new Date().getFullYear() + '-' + (new Date().getFullYear() + 1)
   });
 
-  const niveaux = [
-    'Maternelle',
-    'CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2',
-    '6ème', '5ème', '4ème', '3ème',
-    '2nde', '1ère', 'Terminale'
-  ];
+  const niveauxConfig = {
+    MATERNELLE: ['Petite Section', 'Moyenne Section', 'Grande Section'] as ClasseNiveau[],
+    PRIMAIRE: ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2'] as ClasseNiveau[],
+    SECONDAIRE: ['6e', '5e', '4e', '3e', '2de', '1re', 'Tle'] as ClasseNiveau[]
+  };
 
-  const sections = {
-    'Maternelle': ['Petite section', 'Moyenne section', 'Grande section'],
-    '2nde': ['A', 'C'],
-    '1ère': ['A4', 'C', 'D'],
-    'Terminale': ['A4', 'C', 'D']
+  const sectionsSecondaire = {
+    '2de': ['A', 'C', 'D'],
+    '1re': ['A', 'C', 'D'],
+    'Tle': ['A', 'C', 'D']
   };
 
   useEffect(() => {
@@ -48,7 +47,7 @@ export const ClassManagement: React.FC = () => {
   };
 
   const saveClass = () => {
-    if (!formData.nom || !formData.niveau) {
+    if (!formData.nom || !formData.niveauType || !formData.niveau) {
       alert('Veuillez remplir tous les champs obligatoires');
       return;
     }
@@ -81,7 +80,8 @@ export const ClassManagement: React.FC = () => {
   const resetForm = () => {
     setFormData({
       nom: '',
-      niveau: '',
+      niveauType: undefined,
+      niveau: undefined,
       section: '',
       filiere: '',
       serie: '',
@@ -100,9 +100,10 @@ export const ClassManagement: React.FC = () => {
   };
 
   const filteredClasses = classes.filter(classe => {
-    const matchesSearch = classe.nom.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesNiveau = selectedNiveau === '' || classe.niveau === selectedNiveau;
-    return matchesSearch && matchesNiveau;
+    const matchesSearch = classe.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         classe.niveau.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesNiveauType = selectedNiveauType === '' || classe.niveauType === selectedNiveauType;
+    return matchesSearch && matchesNiveauType;
   });
 
   const getTeacherName = (teacherId?: string) => {
@@ -112,6 +113,17 @@ export const ClassManagement: React.FC = () => {
   };
 
   const teachers = users.filter(u => u.role === 'enseignant');
+
+  const handleNiveauTypeChange = (niveauType: NiveauType) => {
+    setFormData({
+      ...formData,
+      niveauType,
+      niveau: undefined,
+      section: '',
+      filiere: '',
+      serie: ''
+    });
+  };
 
   if (showForm) {
     return (
@@ -125,6 +137,42 @@ export const ClassManagement: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Type de niveau <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={formData.niveauType || ''}
+                  onChange={(e) => handleNiveauTypeChange(e.target.value as NiveauType)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  required
+                >
+                  <option value="">Sélectionner un type</option>
+                  <option value="MATERNELLE">Maternelle</option>
+                  <option value="PRIMAIRE">Primaire</option>
+                  <option value="SECONDAIRE">Secondaire</option>
+                </select>
+              </div>
+
+              {formData.niveauType && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Classe <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={formData.niveau || ''}
+                    onChange={(e) => setFormData({...formData, niveau: e.target.value as ClasseNiveau, section: ''})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    required
+                  >
+                    <option value="">Sélectionner une classe</option>
+                    {niveauxConfig[formData.niveauType].map(niveau => (
+                      <option key={niveau} value={niveau}>{niveau}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Nom de la classe <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -132,29 +180,13 @@ export const ClassManagement: React.FC = () => {
                   value={formData.nom}
                   onChange={(e) => setFormData({...formData, nom: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="Ex: 6ème A, CP1 B..."
+                  placeholder="Ex: 6e A, CP1 B, Petite Section Rouge..."
                   required
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Niveau <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={formData.niveau}
-                  onChange={(e) => setFormData({...formData, niveau: e.target.value, section: ''})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  required
-                >
-                  <option value="">Sélectionner un niveau</option>
-                  {niveaux.map(niveau => (
-                    <option key={niveau} value={niveau}>{niveau}</option>
-                  ))}
-                </select>
-              </div>
-
-              {formData.niveau && sections[formData.niveau as keyof typeof sections] && (
+              {formData.niveauType === 'SECONDAIRE' && formData.niveau &&
+               ['2de', '1re', 'Tle'].includes(formData.niveau) && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Section</label>
                   <select
@@ -163,37 +195,43 @@ export const ClassManagement: React.FC = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                   >
                     <option value="">Sélectionner une section</option>
-                    {sections[formData.niveau as keyof typeof sections].map(section => (
+                    {sectionsSecondaire[formData.niveau as keyof typeof sectionsSecondaire]?.map(section => (
                       <option key={section} value={section}>{section}</option>
                     ))}
                   </select>
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Filière</label>
-                <input
-                  type="text"
-                  value={formData.filiere}
-                  onChange={(e) => setFormData({...formData, filiere: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="Ex: Littéraire, Scientifique..."
-                />
-              </div>
+              {formData.niveauType === 'SECONDAIRE' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Filière</label>
+                    <input
+                      type="text"
+                      value={formData.filiere}
+                      onChange={(e) => setFormData({...formData, filiere: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="Ex: Littéraire, Scientifique..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Série</label>
+                    <input
+                      type="text"
+                      value={formData.serie}
+                      onChange={(e) => setFormData({...formData, serie: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="Ex: A, C, D..."
+                    />
+                  </div>
+                </>
+              )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Série</label>
-                <input
-                  type="text"
-                  value={formData.serie}
-                  onChange={(e) => setFormData({...formData, serie: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="Ex: A4, C, D..."
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Enseignant Principal</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {formData.niveauType === 'MATERNELLE' ? 'Enseignant(e) Responsable' : 'Enseignant Principal'}
+                </label>
                 <select
                   value={formData.enseignantPrincipalId}
                   onChange={(e) => setFormData({...formData, enseignantPrincipalId: e.target.value})}
@@ -266,7 +304,6 @@ export const ClassManagement: React.FC = () => {
         </button>
       </div>
 
-      {/* Filtres */}
       <div className="bg-white rounded-xl shadow-md p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
@@ -280,14 +317,14 @@ export const ClassManagement: React.FC = () => {
             />
           </div>
           <select
-            value={selectedNiveau}
-            onChange={(e) => setSelectedNiveau(e.target.value)}
+            value={selectedNiveauType}
+            onChange={(e) => setSelectedNiveauType(e.target.value as NiveauType | '')}
             className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           >
             <option value="">Tous les niveaux</option>
-            {niveaux.map(niveau => (
-              <option key={niveau} value={niveau}>{niveau}</option>
-            ))}
+            <option value="MATERNELLE">Maternelle</option>
+            <option value="PRIMAIRE">Primaire</option>
+            <option value="SECONDAIRE">Secondaire</option>
           </select>
           <div className="text-sm text-gray-600 flex items-center">
             Total: {filteredClasses.length} classe{filteredClasses.length > 1 ? 's' : ''}
@@ -295,16 +332,20 @@ export const ClassManagement: React.FC = () => {
         </div>
       </div>
 
-      {/* Liste des classes */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredClasses.map((classe) => (
           <div key={classe.id} className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">{classe.nom}</h3>
-                <p className="text-sm text-gray-600">{classe.niveau}</p>
+                <div className="flex items-center space-x-2 mt-1">
+                  <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800 font-medium">
+                    {classe.niveauType}
+                  </span>
+                  <p className="text-sm text-gray-600">{classe.niveau}</p>
+                </div>
                 {classe.section && (
-                  <p className="text-sm text-gray-500">Section: {classe.section}</p>
+                  <p className="text-sm text-gray-500 mt-1">Section: {classe.section}</p>
                 )}
               </div>
               <div className="flex space-x-2">
@@ -352,7 +393,7 @@ export const ClassManagement: React.FC = () => {
           <GraduationCap className="mx-auto h-12 w-12 text-gray-400" />
           <h3 className="mt-2 text-sm font-medium text-gray-900">Aucune classe trouvée</h3>
           <p className="mt-1 text-sm text-gray-500">
-            {searchTerm || selectedNiveau ? 'Aucune classe ne correspond aux critères de recherche.' : 'Commencez par ajouter une classe.'}
+            {searchTerm || selectedNiveauType ? 'Aucune classe ne correspond aux critères de recherche.' : 'Commencez par ajouter une classe.'}
           </p>
         </div>
       )}

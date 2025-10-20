@@ -1,36 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, Edit, Trash2, BookOpen, User } from 'lucide-react';
-import { Subject, User as UserType } from '../types';
+import { Subject, User as UserType, NiveauType, ClasseNiveau } from '../types';
 import { LocalStorage, Generators } from '../utils/storage';
 
 export const SubjectManagement: React.FC = () => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [users, setUsers] = useState<UserType[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedNiveau, setSelectedNiveau] = useState('');
+  const [selectedNiveauType, setSelectedNiveauType] = useState<NiveauType | ''>('');
   const [showForm, setShowForm] = useState(false);
   const [editingSubject, setEditingSubject] = useState<Subject | null>(null);
 
   const [formData, setFormData] = useState<Partial<Subject>>({
     nom: '',
     coefficient: 1,
+    niveauxType: [],
     niveaux: [],
     enseignantId: ''
   });
 
-  const niveaux = [
-    'Maternelle',
-    'CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2',
-    '6ème', '5ème', '4ème', '3ème',
-    '2nde', '1ère', 'Terminale'
-  ];
+  const niveauxConfig = {
+    MATERNELLE: ['Petite Section', 'Moyenne Section', 'Grande Section'] as ClasseNiveau[],
+    PRIMAIRE: ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2'] as ClasseNiveau[],
+    SECONDAIRE: ['6e', '5e', '4e', '3e', '2de', '1re', 'Tle'] as ClasseNiveau[]
+  };
 
   const matieresSuggestions = [
     'Français', 'Mathématiques', 'Histoire-Géographie', 'Sciences Physiques',
     'Sciences de la Vie et de la Terre', 'Anglais', 'Allemand', 'Espagnol',
     'Philosophie', 'Éducation Physique et Sportive', 'Arts Plastiques',
     'Musique', 'Informatique', 'Économie', 'Comptabilité', 'Droit',
-    'Éducation Civique et Morale', 'Travaux Pratiques', 'Technologie'
+    'Éducation Civique et Morale', 'Travaux Pratiques', 'Technologie',
+    'Éveil', 'Graphisme', 'Motricité'
   ];
 
   useEffect(() => {
@@ -79,6 +80,7 @@ export const SubjectManagement: React.FC = () => {
     setFormData({
       nom: '',
       coefficient: 1,
+      niveauxType: [],
       niveaux: [],
       enseignantId: ''
     });
@@ -92,7 +94,26 @@ export const SubjectManagement: React.FC = () => {
     setShowForm(true);
   };
 
-  const handleNiveauChange = (niveau: string, checked: boolean) => {
+  const handleNiveauTypeChange = (niveauType: NiveauType, checked: boolean) => {
+    const currentNiveauxType = formData.niveauxType || [];
+    const currentNiveaux = formData.niveaux || [];
+
+    if (checked) {
+      setFormData({
+        ...formData,
+        niveauxType: [...currentNiveauxType, niveauType]
+      });
+    } else {
+      const niveauxToRemove = niveauxConfig[niveauType];
+      setFormData({
+        ...formData,
+        niveauxType: currentNiveauxType.filter(n => n !== niveauType),
+        niveaux: currentNiveaux.filter(n => !niveauxToRemove.includes(n))
+      });
+    }
+  };
+
+  const handleNiveauChange = (niveau: ClasseNiveau, checked: boolean) => {
     const currentNiveaux = formData.niveaux || [];
     if (checked) {
       setFormData({...formData, niveaux: [...currentNiveaux, niveau]});
@@ -103,8 +124,9 @@ export const SubjectManagement: React.FC = () => {
 
   const filteredSubjects = subjects.filter(subject => {
     const matchesSearch = subject.nom.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesNiveau = selectedNiveau === '' || subject.niveaux.includes(selectedNiveau);
-    return matchesSearch && matchesNiveau;
+    const matchesNiveauType = selectedNiveauType === '' ||
+      (subject.niveauxType && subject.niveauxType.includes(selectedNiveauType));
+    return matchesSearch && matchesNiveauType;
   });
 
   const getTeacherName = (teacherId?: string) => {
@@ -161,7 +183,7 @@ export const SubjectManagement: React.FC = () => {
                 />
               </div>
 
-              <div>
+              <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Enseignant</label>
                 <select
                   value={formData.enseignantId}
@@ -180,21 +202,49 @@ export const SubjectManagement: React.FC = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
-                Niveaux concernés <span className="text-red-500">*</span>
+                Types de niveaux concernés <span className="text-red-500">*</span>
               </label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {niveaux.map(niveau => (
-                  <label key={niveau} className="flex items-center space-x-2">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                {(Object.keys(niveauxConfig) as NiveauType[]).map(niveauType => (
+                  <label key={niveauType} className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
                     <input
                       type="checkbox"
-                      checked={formData.niveaux?.includes(niveau) || false}
-                      onChange={(e) => handleNiveauChange(niveau, e.target.checked)}
+                      checked={formData.niveauxType?.includes(niveauType) || false}
+                      onChange={(e) => handleNiveauTypeChange(niveauType, e.target.checked)}
                       className="rounded border-gray-300 text-green-600 focus:ring-green-500"
                     />
-                    <span className="text-sm text-gray-700">{niveau}</span>
+                    <span className="text-sm font-medium text-gray-700">{niveauType}</span>
                   </label>
                 ))}
               </div>
+
+              {formData.niveauxType && formData.niveauxType.length > 0 && (
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Classes spécifiques <span className="text-red-500">*</span>
+                  </label>
+                  <div className="space-y-4">
+                    {formData.niveauxType.map(niveauType => (
+                      <div key={niveauType} className="border border-gray-200 rounded-lg p-4">
+                        <h4 className="text-sm font-medium text-gray-900 mb-2">{niveauType}</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                          {niveauxConfig[niveauType].map(niveau => (
+                            <label key={niveau} className="flex items-center space-x-2">
+                              <input
+                                type="checkbox"
+                                checked={formData.niveaux?.includes(niveau) || false}
+                                onChange={(e) => handleNiveauChange(niveau, e.target.checked)}
+                                className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                              />
+                              <span className="text-sm text-gray-700">{niveau}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end space-x-4">
@@ -231,7 +281,6 @@ export const SubjectManagement: React.FC = () => {
         </button>
       </div>
 
-      {/* Filtres */}
       <div className="bg-white rounded-xl shadow-md p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
@@ -245,14 +294,14 @@ export const SubjectManagement: React.FC = () => {
             />
           </div>
           <select
-            value={selectedNiveau}
-            onChange={(e) => setSelectedNiveau(e.target.value)}
+            value={selectedNiveauType}
+            onChange={(e) => setSelectedNiveauType(e.target.value as NiveauType | '')}
             className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           >
-            <option value="">Tous les niveaux</option>
-            {niveaux.map(niveau => (
-              <option key={niveau} value={niveau}>{niveau}</option>
-            ))}
+            <option value="">Tous les types de niveaux</option>
+            <option value="MATERNELLE">Maternelle</option>
+            <option value="PRIMAIRE">Primaire</option>
+            <option value="SECONDAIRE">Secondaire</option>
           </select>
           <div className="text-sm text-gray-600 flex items-center">
             Total: {filteredSubjects.length} matière{filteredSubjects.length > 1 ? 's' : ''}
@@ -260,92 +309,51 @@ export const SubjectManagement: React.FC = () => {
         </div>
       </div>
 
-      {/* Liste des matières */}
-      <div className="bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Matière
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Coefficient
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Niveaux
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Enseignant
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredSubjects.map((subject) => (
-                <tr key={subject.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10">
-                        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                          <BookOpen className="h-6 w-6 text-blue-600" />
-                        </div>
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {subject.nom}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                      {subject.coefficient}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredSubjects.map((subject) => (
+          <div key={subject.id} className="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">{subject.nom}</h3>
+                <p className="text-sm text-gray-600">Coefficient: {subject.coefficient}</p>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {subject.niveauxType?.map(niveauType => (
+                    <span key={niveauType} className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800 font-medium">
+                      {niveauType}
                     </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-wrap gap-1">
-                      {subject.niveaux.slice(0, 3).map(niveau => (
-                        <span key={niveau} className="inline-flex px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-800">
-                          {niveau}
-                        </span>
-                      ))}
-                      {subject.niveaux.length > 3 && (
-                        <span className="inline-flex px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-800">
-                          +{subject.niveaux.length - 3}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900 flex items-center">
-                      <User className="h-4 w-4 mr-1 text-gray-400" />
-                      {getTeacherName(subject.enseignantId)}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => editSubject(subject)}
-                        className="text-blue-600 hover:text-blue-900"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => deleteSubject(subject.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => editSubject(subject)}
+                  className="text-blue-600 hover:text-blue-900"
+                >
+                  <Edit className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => deleteSubject(subject.id)}
+                  className="text-red-600 hover:text-red-900"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center text-gray-600">
+                <User className="h-4 w-4 mr-2" />
+                <span>Enseignant: {getTeacherName(subject.enseignantId)}</span>
+              </div>
+              <div className="text-gray-600">
+                <BookOpen className="h-4 w-4 inline mr-2" />
+                <span className="text-xs">
+                  {subject.niveaux?.join(', ') || 'Tous les niveaux'}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       {filteredSubjects.length === 0 && (
@@ -353,7 +361,7 @@ export const SubjectManagement: React.FC = () => {
           <BookOpen className="mx-auto h-12 w-12 text-gray-400" />
           <h3 className="mt-2 text-sm font-medium text-gray-900">Aucune matière trouvée</h3>
           <p className="mt-1 text-sm text-gray-500">
-            {searchTerm || selectedNiveau ? 'Aucune matière ne correspond aux critères de recherche.' : 'Commencez par ajouter une matière.'}
+            {searchTerm || selectedNiveauType ? 'Aucune matière ne correspond aux critères de recherche.' : 'Commencez par ajouter une matière.'}
           </p>
         </div>
       )}

@@ -157,9 +157,9 @@ export const SchoolSettings: React.FC = () => {
                 onChange={(e) => handleInputChange('typeEtablissement', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               >
-                <option value="primaire">Primaire uniquement</option>
+                <option value="primaire">Maternelle et Primaire</option>
                 <option value="secondaire">Secondaire uniquement</option>
-                <option value="primaire_secondaire">Primaire et Secondaire</option>
+                <option value="primaire_secondaire">Maternelle, Primaire et Secondaire</option>
               </select>
             </div>
 

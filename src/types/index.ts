@@ -31,10 +31,19 @@ export interface Student {
   statut: 'actif' | 'inactif' | 'transfere' | 'abandonne';
 }
 
+export type NiveauType = 'MATERNELLE' | 'PRIMAIRE' | 'SECONDAIRE';
+
+export type ClasseMaternelle = 'Petite Section' | 'Moyenne Section' | 'Grande Section';
+export type ClassePrimaire = 'CP1' | 'CP2' | 'CE1' | 'CE2' | 'CM1' | 'CM2';
+export type ClasseSecondaire = '6e' | '5e' | '4e' | '3e' | '2de' | '1re' | 'Tle';
+
+export type ClasseNiveau = ClasseMaternelle | ClassePrimaire | ClasseSecondaire;
+
 export interface Class {
   id: string;
   nom: string;
-  niveau: string;
+  niveauType: NiveauType;
+  niveau: ClasseNiveau;
   section?: string;
   filiere?: string;
   serie?: string;
@@ -47,7 +56,8 @@ export interface Subject {
   id: string;
   nom: string;
   coefficient: number;
-  niveaux: string[];
+  niveauxType: NiveauType[];
+  niveaux: ClasseNiveau[];
   enseignantId?: string;
 }
 
