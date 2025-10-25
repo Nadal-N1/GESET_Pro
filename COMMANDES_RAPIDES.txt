@@ -1,0 +1,177 @@
+═══════════════════════════════════════════════════════════════
+  GESET Pro - Commandes Rapides
+═══════════════════════════════════════════════════════════════
+
+📋 RÉFÉRENCE RAPIDE DES COMMANDES NPM
+═══════════════════════════════════════════════════════════════
+
+
+🌐 MODE WEB
+═══════════════════════════════════════════════════════════════
+
+Développement :
+  npm run dev              → Lance le serveur dev (http://localhost:5173)
+
+Production :
+  npm run build            → Compile l'application pour production
+  npm run preview          → Prévisualise le build de production
+
+Qualité :
+  npm run lint             → Vérifie le code avec ESLint
+
+
+💻 MODE DESKTOP (ELECTRON)
+═══════════════════════════════════════════════════════════════
+
+Développement :
+  npm run electron:dev     → Lance l'appli Electron en mode dev
+                             (avec hot-reload)
+
+Production - Créer les Installateurs :
+  npm run electron:build:win     → Créer installateur Windows (.exe)
+  npm run electron:build:mac     → Créer installateur macOS (.dmg)
+  npm run electron:build:linux   → Créer installateurs Linux (.AppImage, .deb)
+  npm run electron:build         → Créer pour toutes les plateformes
+
+
+🔧 INSTALLATION ET MAINTENANCE
+═══════════════════════════════════════════════════════════════
+
+Installation :
+  npm install              → Installe toutes les dépendances
+
+Nettoyage :
+  rm -rf node_modules      → Supprime les dépendances
+  rm -rf dist              → Supprime le build web
+  rm -rf release           → Supprime les installateurs
+
+Réinstallation complète :
+  rm -rf node_modules dist release
+  npm install
+
+
+📦 RÉSULTAT DES BUILDS
+═══════════════════════════════════════════════════════════════
+
+Build Web (npm run build) :
+  Dossier   : dist/
+  Contenu   : Application web compilée
+  Utilisation : Déploiement web (Netlify, Vercel, etc.)
+
+Build Windows (npm run electron:build:win) :
+  Dossier   : release/
+  Fichier   : GESET-Pro-Setup-1.0.0.exe
+  Taille    : ~70-100 MB
+  Type      : Installateur NSIS (32-bit et 64-bit)
+
+Build macOS (npm run electron:build:mac) :
+  Dossier   : release/
+  Fichier   : GESET-Pro-1.0.0.dmg
+  Taille    : ~100-120 MB
+  Type      : Image disque macOS
+
+Build Linux (npm run electron:build:linux) :
+  Dossier   : release/
+  Fichiers  : GESET-Pro-1.0.0.AppImage
+              geset-pro_1.0.0_amd64.deb
+  Type      : AppImage (universel) + Paquet Debian
+
+
+⚡ RACCOURCIS (SCRIPTS AUTOMATIQUES)
+═══════════════════════════════════════════════════════════════
+
+Windows :
+  build-windows.bat        → Build complet automatique pour Windows
+                             (installe dépendances + build)
+
+Linux/macOS :
+  ./build-windows.sh       → Build complet automatique pour Windows
+                             (depuis Linux/macOS)
+
+
+🐛 DÉPANNAGE - COMMANDES UTILES
+═══════════════════════════════════════════════════════════════
+
+Problème : Les dépendances ne s'installent pas
+  Solution :
+    npm cache clean --force
+    rm -rf node_modules package-lock.json
+    npm install
+
+Problème : Le build échoue
+  Solution :
+    rm -rf node_modules dist release
+    npm install
+    npm run build
+
+Problème : Electron ne démarre pas
+  Solution :
+    npm install --save-dev electron
+    npm run electron:dev
+
+Problème : Port 5173 déjà utilisé
+  Solution :
+    # Modifier le port dans vite.config.ts
+    server: { port: 3000 }
+
+Vérifier la version de Node.js :
+  node --version           → Doit être 18+ minimum
+
+Vérifier la version de npm :
+  npm --version            → Doit être 8+ minimum
+
+Mettre à jour npm :
+  npm install -g npm@latest
+
+
+📊 INFORMATIONS SYSTÈME
+═══════════════════════════════════════════════════════════════
+
+Afficher les dépendances installées :
+  npm list --depth=0
+
+Afficher les dépendances obsolètes :
+  npm outdated
+
+Vérifier les vulnérabilités :
+  npm audit
+
+Corriger les vulnérabilités :
+  npm audit fix
+
+
+🔍 DIAGNOSTIC
+═══════════════════════════════════════════════════════════════
+
+Tester que tout fonctionne :
+  npm run build            → Doit compiler sans erreur
+  npm run electron:dev     → Doit lancer l'application
+
+Taille des fichiers générés :
+  du -sh dist/             → Taille du build web
+  du -sh release/          → Taille des installateurs
+
+
+💡 CONSEILS
+═══════════════════════════════════════════════════════════════
+
+• Toujours faire npm install après clonage du projet
+• Toujours tester avec npm run build avant de créer l'installateur
+• Le premier build Electron est long (~10-15 min), les suivants sont plus rapides
+• Utilisez npm run electron:dev pour développer (hot-reload activé)
+• N'oubliez pas de changer la version dans package.json avant un nouveau build
+
+
+═══════════════════════════════════════════════════════════════
+📖 DOCUMENTATION COMPLÈTE
+═══════════════════════════════════════════════════════════════
+
+Pour plus de détails, consultez :
+  • README.md
+  • COMMENT_CREER_EXECUTABLE.md
+  • BUILD_INSTRUCTIONS.md
+
+
+═══════════════════════════════════════════════════════════════
+© 2024 GESET Pro
+═══════════════════════════════════════════════════════════════

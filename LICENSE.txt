@@ -1,0 +1,17 @@
+LICENCE GESET Pro
+
+Copyright (c) 2024 GESET Pro
+
+Tous droits réservés.
+
+Ce logiciel est fourni "tel quel", sans garantie d'aucune sorte, expresse ou implicite,
+y compris mais sans s'y limiter, les garanties de qualité marchande, d'adéquation à un
+usage particulier et d'absence de contrefaçon.
+
+En aucun cas, les auteurs ou les titulaires de droits d'auteur ne pourront être tenus
+responsables de toute réclamation, dommage ou autre responsabilité, que ce soit dans
+le cadre d'une action contractuelle, délictuelle ou autre, découlant de, hors de ou en
+relation avec le logiciel ou l'utilisation ou d'autres transactions dans le logiciel.
+
+GESET Pro - Système de Gestion Scolaire
+Version 1.0.0

@@ -1,0 +1,132 @@
+═══════════════════════════════════════════════════════════════
+  GESET Pro - Historique des Versions
+═══════════════════════════════════════════════════════════════
+
+Version 1.0.0 - 2024
+═══════════════════════════════════════════════════════════════
+
+🎉 Version Initiale - Support Electron Desktop
+
+✨ Nouvelles Fonctionnalités
+────────────────────────────
+  ✓ Application desktop Windows via Electron
+  ✓ Installateur Windows automatique (NSIS)
+  ✓ Support multi-plateforme (Windows, macOS, Linux)
+  ✓ Scripts de build automatisés
+  ✓ Menu en français
+  ✓ Mode hors ligne complet
+
+📦 Fonctionnalités Core
+────────────────────────────
+  ✓ Gestion des élèves
+  ✓ Gestion des enseignants
+  ✓ Gestion des classes
+  ✓ Gestion des matières
+  ✓ Gestion des notes
+  ✓ Gestion des frais et paiements
+  ✓ Génération de bulletins PDF
+  ✓ Paramètres d'école personnalisables
+  ✓ Multi-utilisateurs avec rôles
+  ✓ Synchronisation cloud (Supabase)
+  ✓ Stockage local (localStorage + IndexedDB)
+
+🔧 Technologies
+────────────────────────────
+  • React 18
+  • TypeScript
+  • Vite
+  • Tailwind CSS
+  • Electron 38
+  • Supabase
+  • jsPDF
+  • Lucide React
+
+📋 Configuration Requise
+────────────────────────────
+  • Windows 10/11
+  • 2 GB RAM minimum
+  • 500 MB espace disque
+  • Connexion internet (recommandée)
+
+🔐 Sécurité
+────────────────────────────
+  • Validation des entrées
+  • Row Level Security (RLS)
+  • Authentification sécurisée
+  • Protection contre les injections
+
+📚 Documentation
+────────────────────────────
+  • BUILD_INSTRUCTIONS.md
+  • COMMENT_CREER_EXECUTABLE.md
+  • CREATION_EXECUTABLE_SIMPLE.txt
+  • GUIDE_INSTALLATION_WINDOWS.md
+  • LISEZ-MOI-INSTALLATION.txt
+  • FICHIERS_ELECTRON.txt
+
+🚀 Installation
+────────────────────────────
+  Pour utilisateurs :
+    Double-clic sur GESET-Pro-Setup-1.0.0.exe
+
+  Pour développeurs :
+    npm install
+    npm run electron:build:win
+
+
+═══════════════════════════════════════════════════════════════
+  INFORMATIONS
+═══════════════════════════════════════════════════════════════
+
+Nom du Produit    : GESET Pro
+Version           : 1.0.0
+Date              : 2024
+Type              : Application Desktop
+Licence           : Propriétaire
+Copyright         : © 2024 GESET Pro - Tous droits réservés
+
+Support           : Consultez la documentation
+Site Web          : -
+Contact           : -
+
+
+═══════════════════════════════════════════════════════════════
+  NOTES DE VERSION
+═══════════════════════════════════════════════════════════════
+
+Cette version 1.0.0 est la première version stable de GESET Pro
+en tant qu'application desktop.
+
+Caractéristiques principales :
+• Application complète de gestion scolaire
+• Installation facile via .exe
+• Fonctionne hors ligne
+• Interface moderne et intuitive
+• Documentation complète en français
+
+Prochaines versions prévues :
+• Auto-update (mise à jour automatique)
+• Import/Export Excel
+• Statistiques avancées
+• Gestion des absences
+• SMS aux parents
+
+
+═══════════════════════════════════════════════════════════════
+  COMPATIBILITÉ
+═══════════════════════════════════════════════════════════════
+
+Systèmes d'exploitation :
+  ✓ Windows 10 (64-bit)
+  ✓ Windows 10 (32-bit)
+  ✓ Windows 11 (64-bit)
+  ✓ Windows 11 (32-bit)
+
+Navigateurs (pour version web) :
+  ✓ Chrome 90+
+  ✓ Firefox 88+
+  ✓ Edge 90+
+  ✓ Safari 14+
+
+
+═══════════════════════════════════════════════════════════════

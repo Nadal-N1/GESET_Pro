@@ -1,0 +1,122 @@
+═══════════════════════════════════════════════════════════════
+  GESET Pro - Créer l'Exécutable Windows
+  Guide Ultra-Rapide
+═══════════════════════════════════════════════════════════════
+
+🎯 EN 3 ÉTAPES SIMPLES
+═══════════════════════════════════════════════════════════════
+
+1️⃣  INSTALLER LES DÉPENDANCES
+   ───────────────────────────
+   Ouvrez un terminal et tapez :
+
+   npm install
+
+
+2️⃣  CRÉER L'INSTALLATEUR
+   ───────────────────────────
+   Sur Windows, double-cliquez sur :
+
+   build-windows.bat
+
+   OU tapez dans le terminal :
+
+   npm run electron:build:win
+
+
+3️⃣  RÉCUPÉRER LE FICHIER
+   ───────────────────────────
+   L'installateur est créé dans le dossier :
+
+   release/GESET-Pro-Setup-1.0.0.exe
+
+   C'est ce fichier que vous distribuez !
+
+
+═══════════════════════════════════════════════════════════════
+📋 PRÉREQUIS
+═══════════════════════════════════════════════════════════════
+
+Vous devez avoir installé :
+  ✓ Node.js 18 ou plus récent (https://nodejs.org)
+  ✓ Windows 10 ou 11 (pour build Windows)
+
+
+═══════════════════════════════════════════════════════════════
+⏱️  DURÉE
+═══════════════════════════════════════════════════════════════
+
+• Installation des dépendances : 2-5 minutes
+• Création de l'installateur  : 5-10 minutes
+• TOTAL                        : ~10-15 minutes
+
+
+═══════════════════════════════════════════════════════════════
+📦 RÉSULTAT
+═══════════════════════════════════════════════════════════════
+
+Fichier créé : GESET-Pro-Setup-1.0.0.exe
+Emplacement  : dossier release/
+Taille       : ~70-100 MB
+Type         : Installateur Windows (NSIS)
+Compatible   : Windows 10/11 (32-bit et 64-bit)
+
+
+═══════════════════════════════════════════════════════════════
+🚀 DISTRIBUER
+═══════════════════════════════════════════════════════════════
+
+Partagez le fichier GESET-Pro-Setup-1.0.0.exe :
+  • Par email
+  • Sur Google Drive / Dropbox
+  • Sur clé USB
+  • Sur votre site web
+
+
+═══════════════════════════════════════════════════════════════
+🧪 TESTER
+═══════════════════════════════════════════════════════════════
+
+Avant de distribuer :
+  1. Double-cliquez sur l'installateur
+  2. Installez l'application
+  3. Lancez et testez toutes les fonctions
+  4. Vérifiez que tout fonctionne
+
+
+═══════════════════════════════════════════════════════════════
+❓ PROBLÈME ?
+═══════════════════════════════════════════════════════════════
+
+Consultez les guides détaillés :
+  • COMMENT_CREER_EXECUTABLE.md     (guide complet)
+  • BUILD_INSTRUCTIONS.md            (instructions détaillées)
+  • GUIDE_INSTALLATION_WINDOWS.md    (pour les utilisateurs)
+
+
+═══════════════════════════════════════════════════════════════
+📞 COMMANDES UTILES
+═══════════════════════════════════════════════════════════════
+
+Développement :
+  npm run dev                  # Lancer en dev (web)
+  npm run electron:dev         # Lancer en dev (Electron)
+
+Production :
+  npm run build                # Compiler l'app web
+  npm run electron:build:win   # Créer installateur Windows
+  npm run electron:build:mac   # Créer installateur macOS
+  npm run electron:build:linux # Créer installateur Linux
+
+Nettoyage :
+  rm -rf node_modules dist release
+  npm install                  # Réinstaller tout
+
+
+═══════════════════════════════════════════════════════════════
+
+C'est tout ! Simple et efficace ! 🎉
+
+Pour plus de détails, consultez COMMENT_CREER_EXECUTABLE.md
+
+═══════════════════════════════════════════════════════════════

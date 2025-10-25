@@ -1,0 +1,181 @@
+═══════════════════════════════════════════════════════════════
+  GESET Pro - Système de Gestion Scolaire
+  Version 1.0.0
+  Installation pour Windows
+═══════════════════════════════════════════════════════════════
+
+📋 TABLE DES MATIÈRES
+═══════════════════════════════════════════════════════════════
+1. À propos
+2. Configuration Requise
+3. Installation Rapide
+4. Première Utilisation
+5. Désinstallation
+6. Support
+
+═══════════════════════════════════════════════════════════════
+1. À PROPOS
+═══════════════════════════════════════════════════════════════
+
+GESET Pro est un système complet de gestion scolaire conçu pour
+les établissements d'enseignement au Burkina Faso.
+
+Fonctionnalités principales :
+  ✓ Gestion des élèves
+  ✓ Gestion des enseignants
+  ✓ Gestion des classes et matières
+  ✓ Gestion des notes et bulletins
+  ✓ Gestion des paiements
+  ✓ Génération de bulletins PDF
+  ✓ Multi-utilisateurs avec rôles
+
+═══════════════════════════════════════════════════════════════
+2. CONFIGURATION REQUISE
+═══════════════════════════════════════════════════════════════
+
+Système d'exploitation :
+  • Windows 10 (64-bit ou 32-bit)
+  • Windows 11
+
+Matériel :
+  • Processeur : 1 GHz minimum
+  • RAM : 2 GB minimum (4 GB recommandé)
+  • Espace disque : 500 MB libre
+  • Écran : 1024x768 pixels minimum
+
+Connexion :
+  • Internet recommandée (pour synchronisation cloud)
+  • Fonctionne aussi hors ligne
+
+═══════════════════════════════════════════════════════════════
+3. INSTALLATION RAPIDE
+═══════════════════════════════════════════════════════════════
+
+Étape 1 : Téléchargement
+─────────────────────────
+  Téléchargez le fichier :
+  GESET-Pro-Setup-1.0.0.exe
+
+Étape 2 : Lancement
+─────────────────────────
+  • Double-cliquez sur le fichier .exe
+  • Si Windows affiche un avertissement :
+    → Cliquez sur "Plus d'informations"
+    → Cliquez sur "Exécuter quand même"
+
+Étape 3 : Installation
+─────────────────────────
+  • Acceptez les termes de la licence
+  • Choisissez le dossier d'installation
+    (par défaut : C:\Program Files\GESET Pro\)
+  • Sélectionnez les options :
+    ☑ Raccourci sur le bureau
+    ☑ Raccourci dans le menu Démarrer
+  • Cliquez sur "Installer"
+  • Attendez la fin de l'installation
+
+Étape 4 : Lancement
+─────────────────────────
+  • Double-cliquez sur l'icône "GESET Pro" sur votre bureau
+  • Ou cherchez "GESET Pro" dans le menu Démarrer
+
+═══════════════════════════════════════════════════════════════
+4. PREMIÈRE UTILISATION
+═══════════════════════════════════════════════════════════════
+
+Connexion par défaut :
+─────────────────────────
+  Nom d'utilisateur : admin
+  Mot de passe      : admin123
+
+⚠️  IMPORTANT : Changez immédiatement ce mot de passe !
+
+Configuration initiale :
+─────────────────────────
+  1. Allez dans "Paramètres" > "Paramètres de l'École"
+  2. Renseignez les informations de votre établissement :
+     - Nom de l'école
+     - Adresse
+     - Téléphone
+     - Logo (format PNG/JPG)
+  3. Créez les classes (exemple : CP1, CE1, 6ème)
+  4. Ajoutez les matières avec leurs coefficients
+  5. Créez des comptes utilisateurs pour le personnel
+
+═══════════════════════════════════════════════════════════════
+5. DÉSINSTALLATION
+═══════════════════════════════════════════════════════════════
+
+Méthode 1 : Via les Paramètres Windows
+───────────────────────────────────────
+  1. Ouvrez "Paramètres" (touche Windows + I)
+  2. Allez dans "Applications"
+  3. Cherchez "GESET Pro"
+  4. Cliquez sur "Désinstaller"
+
+Méthode 2 : Via le programme
+───────────────────────────────────────
+  1. Allez dans C:\Program Files\GESET Pro\
+  2. Exécutez "Uninstall GESET Pro.exe"
+
+Note : Vos données seront préservées même après désinstallation
+      (stockées dans le cloud Supabase).
+
+═══════════════════════════════════════════════════════════════
+6. SUPPORT
+═══════════════════════════════════════════════════════════════
+
+Documentation :
+─────────────────────────
+  • Guide complet : GUIDE_INSTALLATION_WINDOWS.md
+  • Documentation technique : BUILD_INSTRUCTIONS.md
+  • README général : README.md
+
+Problèmes courants :
+─────────────────────────
+
+1. L'installateur ne démarre pas
+   → Exécutez en tant qu'administrateur
+   → Désactivez temporairement l'antivirus
+
+2. L'application ne se lance pas
+   → Vérifiez que Windows est à jour
+   → Réinstallez l'application
+
+3. Erreur de connexion à la base de données
+   → Vérifiez votre connexion internet
+   → L'application fonctionne aussi hors ligne
+
+4. Les données ne se sauvegardent pas
+   → Vérifiez les permissions de l'application
+   → Vérifiez votre connexion internet
+
+Logs et diagnostics :
+─────────────────────────
+  Les logs de l'application se trouvent dans :
+  %APPDATA%\GESET Pro\logs\
+
+═══════════════════════════════════════════════════════════════
+INFORMATIONS SUPPLÉMENTAIRES
+═══════════════════════════════════════════════════════════════
+
+Mise à jour :
+  Pour mettre à jour, téléchargez et installez la nouvelle
+  version. Vos données seront préservées.
+
+Sauvegarde :
+  Vos données sont automatiquement sauvegardées dans le cloud
+  (Supabase) et localement sur votre ordinateur.
+
+Sécurité :
+  • Changez le mot de passe par défaut
+  • Créez des comptes utilisateurs avec les bons rôles
+  • Sauvegardez régulièrement vos données
+
+Performance :
+  L'application supporte jusqu'à 10,000+ élèves sans problème
+  de performance.
+
+═══════════════════════════════════════════════════════════════
+© 2024 GESET Pro - Tous droits réservés
+═══════════════════════════════════════════════════════════════

@@ -17,7 +17,38 @@ GESET Pro est un système complet de gestion scolaire pour les établissements a
 - **Paramètres École** : Logo, couleurs, informations
 - **Multi-utilisateurs** : Rôles (Administrateur, Secrétaire, Comptable, Enseignant, Directeur)
 
-## 🚀 Installation Locale
+## 💻 Installation Windows (Exécutable)
+
+### Pour les Utilisateurs Finaux
+
+Si vous souhaitez simplement **utiliser** l'application sans installer Node.js :
+
+1. **Téléchargez l'installateur Windows** : `GESET-Pro-Setup-1.0.0.exe`
+2. **Double-cliquez** sur le fichier pour lancer l'installation
+3. **Suivez l'assistant** d'installation
+4. **Lancez l'application** depuis le raccourci sur votre bureau
+
+📖 **Guide complet** : Consultez [GUIDE_INSTALLATION_WINDOWS.md](GUIDE_INSTALLATION_WINDOWS.md)
+
+### Pour les Développeurs - Créer l'Exécutable
+
+Si vous souhaitez **créer votre propre installateur Windows** :
+
+```bash
+# Installation des dépendances
+npm install
+
+# Créer l'installateur Windows
+npm run electron:build:win
+```
+
+L'installateur sera créé dans le dossier `release/`
+
+📖 **Guide complet** : Consultez [COMMENT_CREER_EXECUTABLE.md](COMMENT_CREER_EXECUTABLE.md) ou [CREATION_EXECUTABLE_SIMPLE.txt](CREATION_EXECUTABLE_SIMPLE.txt)
+
+---
+
+## 🚀 Installation Locale (Mode Développement)
 
 ### Prérequis
 
@@ -133,16 +164,29 @@ project/
 
 ## 🔧 Commandes Disponibles
 
+### Mode Web (Développement)
+
 ```bash
 # Développement
-npm run dev              # Lancer en mode développement
-
-# Production
-npm run build           # Créer un build de production
-npm run preview         # Prévisualiser le build
+npm run dev              # Lancer en mode développement web
+npm run build            # Créer un build de production
+npm run preview          # Prévisualiser le build
 
 # Qualité du code
-npm run lint            # Vérifier le code avec ESLint
+npm run lint             # Vérifier le code avec ESLint
+```
+
+### Mode Desktop (Electron)
+
+```bash
+# Développement
+npm run electron:dev     # Lancer l'application Electron en mode dev
+
+# Production - Créer les installateurs
+npm run electron:build:win    # Créer installateur Windows (.exe)
+npm run electron:build:mac    # Créer installateur macOS (.dmg)
+npm run electron:build:linux  # Créer installateurs Linux (.AppImage, .deb)
+npm run electron:build        # Créer pour toutes les plateformes
 ```
 
 ## 📦 Technologies Utilisées
@@ -151,6 +195,7 @@ npm run lint            # Vérifier le code avec ESLint
 - **TypeScript** : Typage statique
 - **Vite** : Build tool moderne
 - **Tailwind CSS** : Styles
+- **Electron** : Framework desktop cross-platform
 - **Supabase** : Base de données PostgreSQL
 - **jsPDF** : Génération de PDF
 - **Lucide React** : Icônes

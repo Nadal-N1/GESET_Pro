@@ -1,0 +1,100 @@
+═══════════════════════════════════════════════════════════════
+  GESET Pro - LISEZ-MOI EN PREMIER
+═══════════════════════════════════════════════════════════════
+
+👋 Bienvenue dans GESET Pro !
+
+Système de Gestion Scolaire pour les établissements du Burkina Faso
+
+
+═══════════════════════════════════════════════════════════════
+🎯 VOUS ÊTES...
+═══════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│ 📱 UTILISATEUR FINAL (Je veux juste utiliser l'appli)     │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ 1. Téléchargez : GESET-Pro-Setup-1.0.0.exe                │
+│                                                             │
+│ 2. Double-cliquez pour installer                           │
+│                                                             │
+│ 3. Lancez l'application                                    │
+│                                                             │
+│ 📖 Guide détaillé : LISEZ-MOI-INSTALLATION.txt            │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│ 💻 DÉVELOPPEUR (Je veux créer l'exécutable)               │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ MÉTHODE RAPIDE :                                           │
+│   Double-clic sur : build-windows.bat                      │
+│                                                             │
+│ OU MÉTHODE MANUELLE :                                      │
+│   1. npm install                                           │
+│   2. npm run electron:build:win                            │
+│                                                             │
+│ 📖 Guide détaillé : COMMENT_CREER_EXECUTABLE.md           │
+│ 📖 Guide rapide   : CREATION_EXECUTABLE_SIMPLE.txt        │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════
+📚 DOCUMENTATION DISPONIBLE
+═══════════════════════════════════════════════════════════════
+
+Pour Utilisateurs :
+  • LISEZ-MOI-INSTALLATION.txt
+  • GUIDE_INSTALLATION_WINDOWS.md
+
+Pour Développeurs :
+  • COMMENT_CREER_EXECUTABLE.md
+  • CREATION_EXECUTABLE_SIMPLE.txt
+  • BUILD_INSTRUCTIONS.md
+  • FICHIERS_ELECTRON.txt
+
+Général :
+  • README.md
+  • VERSION.txt
+
+
+═══════════════════════════════════════════════════════════════
+⚡ DÉMARRAGE RAPIDE
+═══════════════════════════════════════════════════════════════
+
+IDENTIFIANTS PAR DÉFAUT :
+  Username : admin
+  Password : admin123
+
+⚠️  IMPORTANT : Changez le mot de passe après la première connexion !
+
+
+═══════════════════════════════════════════════════════════════
+💡 FONCTIONNALITÉS PRINCIPALES
+═══════════════════════════════════════════════════════════════
+
+  ✓ Gestion des élèves
+  ✓ Gestion des enseignants
+  ✓ Gestion des classes
+  ✓ Gestion des notes
+  ✓ Gestion des paiements
+  ✓ Bulletins PDF
+  ✓ Multi-utilisateurs
+  ✓ Fonctionne hors ligne
+
+
+═══════════════════════════════════════════════════════════════
+🆘 BESOIN D'AIDE ?
+═══════════════════════════════════════════════════════════════
+
+Consultez la documentation dans le dossier du projet.
+
+Toute la documentation est en français ! 🇫🇷
+
+
+═══════════════════════════════════════════════════════════════
+© 2024 GESET Pro - Tous droits réservés
+═══════════════════════════════════════════════════════════════
