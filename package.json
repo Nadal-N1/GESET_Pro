@@ -4,7 +4,7 @@
   "description": "Système de Gestion Scolaire pour les établissements au Burkina Faso",
   "author": "GESET Pro",
   "version": "1.0.0",
-  "main": "electron/main.js",
+  "main": "electron/main.cjs",
   "private": true,
   "type": "module",
   "scripts": {

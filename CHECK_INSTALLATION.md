@@ -1,6 +1,40 @@
-# ✅ Checklist de Vérification d'Installation
+# ✅ Problème Résolu : Erreur JavaScript au Démarrage
 
-## Avant de Partager le Projet
+## Symptôme
+
+Après installation de l'exécutable, l'application affichait cette erreur :
+```
+A JavaScript error occurred in the main process
+Uncaught Exception:
+ReferenceError: require is not defined in ES module scope
+```
+
+## Cause
+
+Conflit entre les types de modules :
+- `package.json` contient `"type": "module"` (pour Vite/ESM)
+- Fichiers Electron utilisent CommonJS (`require`)
+- Node.js ne savait pas quel système utiliser
+
+## Solution Appliquée ✅
+
+**Fichiers renommés :**
+- `electron/main.js` → `electron/main.cjs`
+- `electron/preload.js` → `electron/preload.cjs`
+
+**Configuration mise à jour :**
+- `package.json` : `"main": "electron/main.cjs"`
+
+**Résultat :**
+- ✅ L'extension `.cjs` force l'utilisation de CommonJS
+- ✅ Vite continue d'utiliser ESM pour le frontend
+- ✅ Aucun conflit entre les deux systèmes
+
+---
+
+## Checklist de Vérification Post-Installation
+
+### Avant de Partager le Projet
 
 Cette checklist garantit que le projet est prêt pour une installation sur un autre ordinateur.
 
