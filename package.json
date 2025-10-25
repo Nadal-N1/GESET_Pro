@@ -65,7 +65,6 @@
           "arch": ["x64", "ia32"]
         }
       ],
-      "icon": "public/image.png",
       "artifactName": "GESET-Pro-Setup-${version}.${ext}"
     },
     "nsis": {
@@ -74,8 +73,6 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "GESET Pro",
-      "installerIcon": "public/image.png",
-      "uninstallerIcon": "public/image.png",
       "license": "LICENSE.txt",
       "language": "1036"
     },

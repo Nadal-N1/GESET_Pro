@@ -1,5 +1,37 @@
 # 🚀 Guide de Démarrage Rapide - GESET Pro
 
+## 📦 Créer l'Exécutable Windows (3 Étapes)
+
+### Étape 1 : Installer les Dépendances
+```bash
+npm install
+```
+**Durée** : 2-5 minutes
+
+### Étape 2 : Créer l'Installateur
+```bash
+npm run electron:build:win
+```
+**Durée** : 10-15 minutes (premier build)
+
+### Étape 3 : Récupérer l'Installateur
+L'installateur est créé dans :
+```
+release/GESET-Pro-Setup-1.0.0.exe
+```
+
+**C'est tout !** Vous pouvez maintenant distribuer ce fichier.
+
+---
+
+## ⚠️ Note sur l'Icône
+
+L'application utilise l'icône par défaut d'Electron (icône bleue professionnelle).
+
+Pour ajouter une icône personnalisée, consultez : **AJOUTER_ICONE.md**
+
+---
+
 ## Installation en 5 Minutes
 
 ### Windows

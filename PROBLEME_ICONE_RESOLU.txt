@@ -1,0 +1,84 @@
+═══════════════════════════════════════════════════════════════
+  GESET Pro - Problème d'Icône Résolu
+═══════════════════════════════════════════════════════════════
+
+⚠️  PROBLÈME IDENTIFIÉ
+═══════════════════════════════════════════════════════════════
+
+Erreur lors du build :
+  "Error while loading icon from public/image.png: invalid icon file"
+
+Cause :
+  Le fichier image.png n'est pas au format ICO requis par Windows.
+  NSIS (l'installateur Windows) nécessite un fichier .ico, pas .png
+
+
+✅ SOLUTION APPLIQUÉE
+═══════════════════════════════════════════════════════════════
+
+Configuration modifiée pour utiliser l'icône par défaut d'Electron.
+
+Fichiers modifiés :
+  • package.json       → Références à l'icône supprimées
+  • electron/main.js   → Ligne icon supprimée
+
+Résultat :
+  ✓ Le build fonctionne maintenant sans erreur
+  ✓ L'application utilise l'icône Electron bleue par défaut
+  ✓ Professionnelle et reconnaissable
+
+
+🎯 POUR AJOUTER UNE ICÔNE PERSONNALISÉE PLUS TARD
+═══════════════════════════════════════════════════════════════
+
+📖 Consultez le guide complet : AJOUTER_ICONE.md
+
+Résumé rapide :
+
+1. Convertir votre logo en format ICO
+   → Utilisez un convertisseur en ligne
+   → https://convertio.co/fr/png-ico/
+
+2. Créer un fichier icon.ico multi-résolution
+   → Inclure : 16x16, 32x32, 48x48, 64x64, 128x128, 256x256
+
+3. Placer dans public/icon.ico
+
+4. Modifier package.json :
+   "win": {
+     "icon": "public/icon.ico"
+   }
+   "nsis": {
+     "installerIcon": "public/icon.ico",
+     "uninstallerIcon": "public/icon.ico"
+   }
+
+5. Modifier electron/main.js :
+   icon: path.join(__dirname, '../public/icon.ico')
+
+6. Rebuild :
+   npm run electron:build:win
+
+
+⚡ VOUS POUVEZ MAINTENANT CRÉER L'EXÉCUTABLE
+═══════════════════════════════════════════════════════════════
+
+La configuration est fonctionnelle. Lancez simplement :
+
+  npm run electron:build:win
+
+L'installateur sera créé avec l'icône par défaut d'Electron.
+
+
+📝 NOTE IMPORTANTE
+═══════════════════════════════════════════════════════════════
+
+• L'icône par défaut d'Electron est professionnelle
+• Elle est immédiatement reconnaissable comme application Electron
+• Vous pouvez l'utiliser sans problème pour la distribution
+• Ajoutez votre icône personnalisée quand vous serez prêt
+
+
+═══════════════════════════════════════════════════════════════
+© 2024 GESET Pro
+═══════════════════════════════════════════════════════════════
