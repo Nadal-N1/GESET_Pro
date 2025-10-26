@@ -167,7 +167,7 @@ export const GradeManagement: React.FC = () => {
       // Utiliser le générateur de bulletin secondaire
       const allGrades = grades;
 
-      classStudents.forEach((student, studentIndex) => {
+      classStudents.forEach((student) => {
         const doc = BulletinGenerator.generateSecondaireBulletin(
           student,
           classe,
@@ -178,16 +178,31 @@ export const GradeManagement: React.FC = () => {
           allGrades
         );
 
-        if (studentIndex === 0) {
-          doc.save(`Bulletins_${classe.nom}_T${selectedTrimester}_${student.nom}.pdf`);
-        } else {
-          doc.save(`Bulletins_${classe.nom}_T${selectedTrimester}_${student.nom}.pdf`);
-        }
+        doc.save(`Bulletin_${classe.nom}_T${selectedTrimester}_${student.nom}.pdf`);
       });
 
       alert('Bulletins secondaire générés avec succès !');
+    } else if (classe.niveauType === 'PRIMAIRE') {
+      // Utiliser le générateur de bulletin primaire
+      const allGrades = grades;
+
+      classStudents.forEach((student) => {
+        const doc = BulletinGenerator.generatePrimaireBulletin(
+          student,
+          classe,
+          classSubjects,
+          grades,
+          selectedTrimester,
+          classStudents,
+          allGrades
+        );
+
+        doc.save(`Bulletin_${classe.nom}_T${selectedTrimester}_${student.nom}.pdf`);
+      });
+
+      alert('Bulletins primaire générés avec succès !');
     } else {
-      // Utiliser le générateur de bulletin primaire (existant)
+      // Format par défaut (Maternelle ou autre)
       const schoolSettings = SchoolSettingsService.getSettings();
       const doc = new jsPDF();
 

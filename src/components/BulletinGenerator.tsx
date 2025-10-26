@@ -3,6 +3,385 @@ import { Grade, Student, Subject, Class } from '../types';
 import { SchoolSettingsService } from '../utils/schoolSettings';
 
 export class BulletinGenerator {
+  static generatePrimaireBulletin(
+    student: Student,
+    classInfo: Class,
+    subjects: Subject[],
+    grades: Grade[],
+    trimester: 1 | 2 | 3,
+    classStudents: Student[],
+    allGrades: Grade[]
+  ): jsPDF {
+    const doc = new jsPDF();
+    const schoolSettings = SchoolSettingsService.getSettings();
+
+    let yPosition = 15;
+
+    // En-tête avec logo et informations établissement
+    if (schoolSettings.logo) {
+      try {
+        doc.addImage(schoolSettings.logo, 'PNG', 15, yPosition, 25, 25);
+      } catch (e) {
+        console.log('Logo non chargé');
+      }
+    }
+
+    // Nom de l'établissement centré
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text(schoolSettings.nomEtablissement.toUpperCase(), 105, yPosition + 5, { align: 'center' });
+
+    // Slogan/Devise
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'italic');
+    if (schoolSettings.devise) {
+      doc.text(schoolSettings.devise, 105, yPosition + 11, { align: 'center' });
+    }
+
+    // Adresse et contacts
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    if (schoolSettings.adresse) {
+      doc.text(`${schoolSettings.adresse}`, 105, yPosition + 16, { align: 'center' });
+    }
+    if (schoolSettings.telephone) {
+      doc.text(`Tél : ${schoolSettings.telephone}`, 105, yPosition + 20, { align: 'center' });
+    }
+
+    // Localisation côté droit
+    doc.setFontSize(9);
+    doc.text('BURKINA FASO', 170, yPosition + 5, { align: 'center' });
+    doc.text('La Patrie ou la Mort,', 170, yPosition + 9, { align: 'center' });
+    doc.text('Nous Vaincrons', 170, yPosition + 13, { align: 'center' });
+    doc.text(`Année Scolaire ${schoolSettings.anneeScolaireActuelle}`, 170, yPosition + 20, { align: 'center' });
+
+    yPosition = 48;
+
+    // Titre du bulletin
+    doc.setFillColor(240, 240, 240);
+    doc.rect(50, yPosition, 110, 8, 'F');
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`BULLETIN DE NOTES DU ${trimester}er TRIMESTRE`, 105, yPosition + 5, { align: 'center' });
+
+    yPosition = 60;
+
+    // Informations de l'élève - Partie gauche
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Nom de l'élève : `, 15, yPosition);
+    doc.setFont('helvetica', 'bold');
+    doc.text(student.nom.toUpperCase(), 50, yPosition);
+
+    yPosition += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Prénom(s) : `, 15, yPosition);
+    doc.setFont('helvetica', 'bold');
+    doc.text(student.prenom, 50, yPosition);
+
+    yPosition += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.text(`né(e) le : `, 15, yPosition);
+    doc.setFont('helvetica', 'bold');
+    doc.text(new Date(student.dateNaissance).toLocaleDateString('fr-FR'), 50, yPosition);
+
+    yPosition += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.text(`à `, 15, yPosition);
+    doc.setFont('helvetica', 'bold');
+    doc.text(student.lieuNaissance || 'Ouagadougou', 50, yPosition);
+
+    yPosition += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Sexe : `, 15, yPosition);
+    doc.setFont('helvetica', 'bold');
+    doc.text(student.sexe, 50, yPosition);
+
+    // Informations de l'élève - Partie droite
+    yPosition = 60;
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Matricule : `, 120, yPosition);
+    doc.setFont('helvetica', 'bold');
+    doc.text(student.matricule, 150, yPosition);
+
+    yPosition += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Classe : `, 120, yPosition);
+    doc.setFont('helvetica', 'bold');
+    doc.text(classInfo.nom, 150, yPosition);
+
+    yPosition += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Effectif : `, 120, yPosition);
+    doc.setFont('helvetica', 'bold');
+    doc.text(classStudents.length.toString(), 150, yPosition);
+
+    yPosition += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Classe redoublée : `, 120, yPosition);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Néant', 165, yPosition);
+
+    yPosition = 90;
+
+    // Tableau principal avec deux sections
+    const tableStartY = yPosition;
+
+    // Section gauche : Notes
+    const leftSection = {
+      x: 30,
+      width: 90,
+      col1: 40, // Disciplines
+      col2: 15, // Note
+      col3: 15, // Barème
+      col4: 20  // Appréciation
+    };
+
+    // En-tête du tableau de notes
+    doc.setFillColor(220, 220, 220);
+    doc.rect(leftSection.x, yPosition, leftSection.width, 7, 'FD');
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+
+    let xPos = leftSection.x;
+    doc.text('Disciplines', xPos + 18, yPosition + 4.5, { align: 'center' });
+    doc.rect(xPos, yPosition, leftSection.col1, 7, 'D');
+
+    xPos += leftSection.col1;
+    doc.text('Note', xPos + 7.5, yPosition + 4.5, { align: 'center' });
+    doc.rect(xPos, yPosition, leftSection.col2, 7, 'D');
+
+    xPos += leftSection.col2;
+    doc.text('Barème', xPos + 7.5, yPosition + 4.5, { align: 'center' });
+    doc.rect(xPos, yPosition, leftSection.col3, 7, 'D');
+
+    xPos += leftSection.col3;
+    doc.text('Appréciation', xPos + 10, yPosition + 4.5, { align: 'center' });
+    doc.rect(xPos, yPosition, leftSection.col4, 7, 'D');
+
+    yPosition += 7;
+
+    // Corps du tableau - Matières
+    let totalPoints = 0;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+
+    subjects.forEach((subject) => {
+      const studentGrades = grades.filter(
+        g => g.eleveId === student.id &&
+        g.matiereId === subject.id &&
+        g.trimestre === trimester
+      );
+
+      // Calcul de la moyenne sur 20
+      const moyenne = studentGrades.length > 0
+        ? studentGrades.reduce((sum, g) => sum + (g.note / g.noteMax) * 20, 0) / studentGrades.length
+        : 0;
+
+      const bareme = 20; // Toujours sur 20 pour le primaire
+
+      if (moyenne > 0) {
+        totalPoints += moyenne;
+      }
+
+      // Appréciation
+      let appreciation = '';
+      if (moyenne >= 16) appreciation = 'Excellent';
+      else if (moyenne >= 14) appreciation = 'Très Bien';
+      else if (moyenne >= 12) appreciation = 'Assez Bien';
+      else if (moyenne >= 10) appreciation = 'Bien';
+      else if (moyenne > 0) appreciation = 'Insuffisant';
+
+      // Ligne de matière
+      xPos = leftSection.x;
+      doc.setFont('helvetica', 'italic');
+      doc.text(subject.nom, xPos + 2, yPosition + 4.5);
+
+      xPos += leftSection.col1;
+      doc.setFont('helvetica', 'normal');
+      doc.text(moyenne > 0 ? moyenne.toFixed(2) : '', xPos + 7.5, yPosition + 4.5, { align: 'center' });
+
+      xPos += leftSection.col2;
+      doc.text(bareme.toString(), xPos + 7.5, yPosition + 4.5, { align: 'center' });
+
+      xPos += leftSection.col3;
+      doc.setFontSize(7);
+      doc.text(appreciation, xPos + 10, yPosition + 4.5, { align: 'center' });
+      doc.setFontSize(8);
+
+      // Bordures
+      xPos = leftSection.x;
+      doc.rect(xPos, yPosition, leftSection.col1, 6, 'D');
+      xPos += leftSection.col1;
+      doc.rect(xPos, yPosition, leftSection.col2, 6, 'D');
+      xPos += leftSection.col2;
+      doc.rect(xPos, yPosition, leftSection.col3, 6, 'D');
+      xPos += leftSection.col3;
+      doc.rect(xPos, yPosition, leftSection.col4, 6, 'D');
+
+      yPosition += 6;
+    });
+
+    // Ligne Total
+    xPos = leftSection.x;
+    doc.setFillColor(220, 220, 220);
+    doc.rect(xPos, yPosition, leftSection.col1, 6, 'FD');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.text('Total :', xPos + 15, yPosition + 4.5);
+
+    xPos += leftSection.col1;
+    doc.rect(xPos, yPosition, leftSection.col2 + leftSection.col3 + leftSection.col4, 6, 'FD');
+    doc.text(totalPoints.toFixed(2), xPos + 10, yPosition + 4.5);
+
+    yPosition += 8;
+
+    // Moyenne du trimestre et Rang
+    const moyenneTrimestre = subjects.length > 0 ? (totalPoints / subjects.length).toFixed(2) : '0,00';
+
+    // Calcul du rang
+    const classAverages = classStudents.map(s => {
+      let studentTotal = 0;
+      let studentCount = 0;
+      subjects.forEach(subject => {
+        const sGrades = allGrades.filter(
+          g => g.eleveId === s.id &&
+          g.matiereId === subject.id &&
+          g.trimestre === trimester
+        );
+        if (sGrades.length > 0) {
+          const avg = sGrades.reduce((sum, g) => sum + (g.note / g.noteMax) * 20, 0) / sGrades.length;
+          studentTotal += avg;
+          studentCount++;
+        }
+      });
+      return { studentId: s.id, average: studentCount > 0 ? studentTotal / studentCount : 0 };
+    }).sort((a, b) => b.average - a.average);
+
+    const rang = classAverages.findIndex(a => a.studentId === student.id) + 1;
+    const rangSuffix = rang === 1 ? 'er' : 'e';
+
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Moyenne du trimestre : `, leftSection.x, yPosition);
+    doc.setFont('helvetica', 'bold');
+    doc.text(moyenneTrimestre, leftSection.x + 50, yPosition);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Rang : ${rang}${rangSuffix}`, leftSection.x + 65, yPosition);
+
+    yPosition += 2;
+    doc.rect(leftSection.x, yPosition, leftSection.width, 0.5, 'F');
+    yPosition += 8;
+
+    // Statistiques
+    const maxAvg = classAverages[0]?.average || 0;
+    const minAvg = classAverages[classAverages.length - 1]?.average || 0;
+    const classAvg = classAverages.reduce((sum, a) => sum + a.average, 0) / (classAverages.length || 1);
+
+    doc.setFontSize(8);
+    doc.text(`Faible Moyenne : ${minAvg.toFixed(2)}`, leftSection.x + 2, yPosition);
+    yPosition += 5;
+    doc.text(`Forte Moyenne : ${maxAvg.toFixed(2)}`, leftSection.x + 2, yPosition);
+    yPosition += 5;
+    doc.text(`Moyenne de la classe : ${classAvg.toFixed(2)}`, leftSection.x + 2, yPosition);
+
+    // Section droite : Visa et Signature
+    const rightSection = {
+      x: 125,
+      y: tableStartY + 7,
+      width: 65
+    };
+
+    // Visa des Parents
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('Visa des Parents', rightSection.x + 32.5, rightSection.y + 10, { align: 'center' });
+
+    // Espace pour visa
+    doc.rect(rightSection.x + 5, rightSection.y + 15, 55, 40, 'D');
+
+    // Signature de l'Enseignant
+    doc.text('Signature de l\'Enseignant', rightSection.x + 32.5, rightSection.y + 65, { align: 'center' });
+
+    // Appréciation Générale (bas de page)
+    yPosition = 205;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('APPRECIATION GENERALE', 70, yPosition, { align: 'center' });
+    doc.text(`Ouagadougou, le ${new Date().toLocaleDateString('fr-FR')}`, 155, yPosition, { align: 'center' });
+
+    yPosition += 6;
+
+    // Colonnes Travail et Sanctions
+    const colWidth = 55;
+    let leftCol = 20;
+    let rightCol = 90;
+
+    // Travail
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.text('TRAVAIL', leftCol + 20, yPosition);
+    doc.rect(leftCol, yPosition + 2, colWidth, 28, 'D');
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    const travailItems = ['EXCELLENT', 'TRES BIEN', 'BIEN', 'ASSEZ BIEN', 'PASSABLE', 'INSUFFISANT', 'TRES INSUFFISANT'];
+    let itemY = yPosition + 6;
+    travailItems.forEach(item => {
+      doc.rect(leftCol + 2, itemY - 2, 3, 3, 'D');
+      doc.text(item, leftCol + 7, itemY);
+      itemY += 4;
+    });
+
+    // Sanctions
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.text('SANCTIONS', rightCol + 20, yPosition);
+    doc.rect(rightCol, yPosition + 2, colWidth, 28, 'D');
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    const sanctionItems = ['Tableau d\'Honneur', 'Encouragements', 'Félicitations', 'Avertissements', 'Blâme'];
+    itemY = yPosition + 7;
+    sanctionItems.forEach(item => {
+      doc.rect(rightCol + 2, itemY - 2, 3, 3, 'D');
+      doc.text(item, rightCol + 7, itemY);
+      itemY += 5.5;
+    });
+
+    yPosition += 32;
+
+    // Conduite
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.text('CONDUITE', leftCol + 20, yPosition);
+    doc.rect(leftCol, yPosition + 2, colWidth, 15, 'D');
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    const conduiteItems = ['Bonne', 'Passable', 'Mauvaise'];
+    itemY = yPosition + 7;
+    conduiteItems.forEach(item => {
+      doc.rect(leftCol + 2, itemY - 2, 3, 3, 'D');
+      doc.text(item, leftCol + 7, itemY);
+      itemY += 5;
+    });
+
+    // Signature et Cachet du Directeur
+    doc.setFont('helvetica', 'bold');
+    doc.text('Signature et Cachet du Directeur', 117.5, yPosition + 7, { align: 'center' });
+    doc.rect(rightCol, yPosition + 2, colWidth, 15, 'D');
+
+    if (schoolSettings.directeur) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.text(schoolSettings.directeur, 117.5, yPosition + 14, { align: 'center' });
+    }
+
+    return doc;
+  }
+
   static generateSecondaireBulletin(
     student: Student,
     classInfo: Class,

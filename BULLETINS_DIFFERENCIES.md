@@ -97,14 +97,23 @@ Colonnes :
 
 ### Bulletin Primaire (À personnaliser)
 
-Format plus simple adapté au primaire :
-- En-tête avec logo et établissement
-- Informations élève basiques
-- Tableau matière/coefficient/moyenne
-- Moyenne générale
-- Appréciation du directeur
+✅ **Implémenté - Modèle officiel Burkina Faso**
 
-**Note :** En attente du modèle spécifique du primaire pour mise à jour.
+Format professionnel adapté au primaire avec disposition en deux sections :
+
+**Section Gauche - Notes :**
+- Tableau : Disciplines / Note / Barème / Appréciation
+- Total des notes
+- Moyenne du trimestre et Rang
+- Statistiques de classe (faible, forte, moyenne)
+
+**Section Droite - Visa :**
+- Grand espace pour Visa des Parents
+- Signature de l'Enseignant
+
+**Bas de page :**
+- Appréciation générale (Travail, Sanctions, Conduite)
+- Signature et cachet du Directeur
 
 ## Calcul des Moyennes
 
@@ -117,9 +126,12 @@ Moyenne Trimestre = Σ(Pondérés) / Σ(Coefficients)
 
 ### Primaire
 ```
-Moyenne Matière = Moyenne de toutes les notes
-Moyenne Générale = Σ(Moyenne × Coef) / Σ(Coefficients)
+Moyenne Matière = Moyenne de toutes les notes sur 20
+Total = Σ(Moyennes des matières)
+Moyenne Trimestre = Total / Nombre de matières
 ```
+
+**Note :** Le primaire n'utilise pas de coefficients, toutes les matières comptent de manière égale.
 
 ## Calcul du Rang
 
@@ -218,15 +230,15 @@ Toutes les informations proviennent des **Paramètres de l'école** :
 ## Prochaines Améliorations
 
 ### En attente
-1. **Modèle bulletin primaire personnalisé**
-   - Format adapté aux classes primaires
-   - Disposition spécifique
-   - Appréciations adaptées
-
-2. **Options d'impression**
+1. **Options d'impression**
    - Aperçu avant génération
    - Impression par lots
    - Choix du format (A4/Letter)
+
+2. **Bulletin Maternelle**
+   - Format adapté à la maternelle
+   - Évaluations qualitatives
+   - Compétences observées
 
 3. **Statistiques avancées**
    - Évolution trimestre par trimestre
@@ -265,4 +277,5 @@ Pour personnaliser davantage les bulletins ou signaler un problème :
 **Version actuelle :** 1.0.0
 **Dernière mise à jour :** Octobre 2024
 **Statut Bulletin Secondaire :** ✅ Implémenté
-**Statut Bulletin Primaire :** ⏳ En attente du modèle
+**Statut Bulletin Primaire :** ✅ Implémenté
+**Statut Bulletin Maternelle :** ⏳ À développer

@@ -31,12 +31,16 @@
    ✓ Gestion des matières
    ✓ Gestion des utilisateurs
 
-📊 NOTES ET BULLETINS
+📊 NOTES ET BULLETINS (DIFFÉRENCIÉS)
    ✓ Saisie des notes par matière
    ✓ Calcul automatique des moyennes
    ✓ Génération de bulletins PDF
    ✓ Logo sur les bulletins
    ✓ Appréciations personnalisées
+   ✓ Bulletin SECONDAIRE professionnel (Devoir+Compo)
+   ✓ Bulletin PRIMAIRE adapté (sans coefficients)
+   ✓ Détection automatique du type
+   ✓ Rang et statistiques de classe
 
 💰 FRAIS ET PAIEMENTS (PROFESSIONNEL)
    ✓ Configuration des frais par classe et type
@@ -92,6 +96,13 @@
    - Aperçu en temps réel
 5. ✅ CSS impression optimisé pour logos
 6. ✅ Documentation complète de compilation
+7. ✅ Bulletins différenciés PRIMAIRE et SECONDAIRE :
+   - Bulletin SECONDAIRE avec Devoir/Compo/Pondération
+   - Bulletin PRIMAIRE sans coefficients (égalité matières)
+   - Détection automatique selon la classe
+   - Mise en page conforme modèles officiels BF
+   - Calculs spécifiques à chaque niveau
+   - Statistiques et rang pour les deux
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
