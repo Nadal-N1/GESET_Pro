@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, FileText, Calculator, Download } from 'lucide-react';
+import { Plus, Edit, Trash2, FileText, Download } from 'lucide-react';
 import { Grade, Student, Subject, Class } from '../types';
 import { LocalStorage, Generators } from '../utils/storage';
 import { SchoolSettingsService } from '../utils/schoolSettings';
 import { jsPDF } from 'jspdf';
+import { BulletinGenerator } from './BulletinGenerator';
 
 export const GradeManagement: React.FC = () => {
   const [grades, setGrades] = useState<Grade[]>([]);
@@ -143,150 +144,190 @@ export const GradeManagement: React.FC = () => {
       return;
     }
 
+    const classe = classes.find(c => c.id === selectedClass);
+    if (!classe) {
+      alert('Classe non trouvée');
+      return;
+    }
+
     const classStudents = students.filter(s => s.classeId === selectedClass);
     const classSubjects = subjects.filter(s => {
-      const classe = classes.find(c => c.id === selectedClass);
-      return classe && s.niveaux.includes(classe.niveau);
+      return s.niveaux.includes(classe.niveau);
     });
 
-    const schoolSettings = SchoolSettingsService.getSettings();
-    const doc = new jsPDF();
+    if (classStudents.length === 0) {
+      alert('Aucun élève dans cette classe');
+      return;
+    }
 
-    classStudents.forEach((student, studentIndex) => {
-      if (studentIndex > 0) {
-        doc.addPage();
-      }
+    // Déterminer le type de bulletin selon le niveau
+    const isSecondaire = classe.niveauType === 'SECONDAIRE';
 
-      let yPosition = 20;
+    if (isSecondaire) {
+      // Utiliser le générateur de bulletin secondaire
+      const allGrades = grades;
 
-      if (schoolSettings.logo) {
-        try {
-          doc.addImage(schoolSettings.logo, 'PNG', 15, yPosition, 30, 30);
-        } catch (e) {
-          console.log('Logo non chargé');
+      classStudents.forEach((student, studentIndex) => {
+        const doc = BulletinGenerator.generateSecondaireBulletin(
+          student,
+          classe,
+          classSubjects,
+          grades,
+          selectedTrimester,
+          classStudents,
+          allGrades
+        );
+
+        if (studentIndex === 0) {
+          doc.save(`Bulletins_${classe.nom}_T${selectedTrimester}_${student.nom}.pdf`);
+        } else {
+          doc.save(`Bulletins_${classe.nom}_T${selectedTrimester}_${student.nom}.pdf`);
         }
-      }
-
-      doc.setFontSize(18);
-      doc.setFont('helvetica', 'bold');
-      doc.text(schoolSettings.nomEtablissement, 105, yPosition + 10, { align: 'center' });
-
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      if (schoolSettings.adresse) {
-        doc.text(`${schoolSettings.adresse}, ${schoolSettings.ville}`, 105, yPosition + 17, { align: 'center' });
-      }
-      if (schoolSettings.telephone) {
-        doc.text(`Tél: ${schoolSettings.telephone}`, 105, yPosition + 22, { align: 'center' });
-      }
-
-      yPosition += 35;
-      doc.setLineWidth(0.5);
-      doc.line(15, yPosition, 195, yPosition);
-
-      yPosition += 10;
-      doc.setFontSize(16);
-      doc.setFont('helvetica', 'bold');
-      doc.text('BULLETIN DE NOTES', 105, yPosition, { align: 'center' });
-
-      yPosition += 7;
-      doc.setFontSize(12);
-      doc.text(`${getClassName(selectedClass)} - Trimestre ${selectedTrimester}`, 105, yPosition, { align: 'center' });
-      doc.text(`Année scolaire: ${schoolSettings.anneeScolaireActuelle}`, 105, yPosition + 6, { align: 'center' });
-
-      yPosition += 15;
-      doc.setFontSize(11);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Informations de l\'élève:', 15, yPosition);
-
-      yPosition += 6;
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Nom: ${student.nom}`, 15, yPosition);
-      doc.text(`Prénom: ${student.prenom}`, 105, yPosition);
-
-      yPosition += 6;
-      doc.text(`Matricule: ${student.matricule}`, 15, yPosition);
-      doc.text(`Date de naissance: ${new Date(student.dateNaissance).toLocaleDateString('fr-FR')}`, 105, yPosition);
-
-      yPosition += 10;
-      doc.setFont('helvetica', 'bold');
-      doc.text('Résultats scolaires:', 15, yPosition);
-
-      yPosition += 8;
-      doc.setFillColor(schoolSettings.couleurPrimaire || '#059669');
-      doc.rect(15, yPosition - 5, 180, 8, 'F');
-
-      doc.setTextColor(255, 255, 255);
-      doc.text('Matière', 20, yPosition);
-      doc.text('Coef', 120, yPosition);
-      doc.text('Moyenne', 160, yPosition);
-
-      yPosition += 5;
-      doc.setTextColor(0, 0, 0);
-      doc.setFont('helvetica', 'normal');
-
-      let totalPoints = 0;
-      let totalCoefficients = 0;
-
-      classSubjects.forEach(subject => {
-        const average = calculateAverage(student.id, subject.id, selectedTrimester);
-        const displayAverage = average || 'N/A';
-
-        if (yPosition > 260) {
-          doc.addPage();
-          yPosition = 20;
-        }
-
-        doc.text(subject.nom.substring(0, 40), 20, yPosition);
-        doc.text(subject.coefficient.toString(), 125, yPosition);
-        doc.text(displayAverage.toString(), 165, yPosition);
-
-        if (average) {
-          totalPoints += parseFloat(average) * subject.coefficient;
-          totalCoefficients += subject.coefficient;
-        }
-
-        yPosition += 6;
       });
 
-      const generalAverage = totalCoefficients > 0 ? (totalPoints / totalCoefficients).toFixed(2) : 'N/A';
+      alert('Bulletins secondaire générés avec succès !');
+    } else {
+      // Utiliser le générateur de bulletin primaire (existant)
+      const schoolSettings = SchoolSettingsService.getSettings();
+      const doc = new jsPDF();
 
-      yPosition += 5;
-      doc.setLineWidth(0.5);
-      doc.line(15, yPosition, 195, yPosition);
+      classStudents.forEach((student, studentIndex) => {
+        if (studentIndex > 0) {
+          doc.addPage();
+        }
 
-      yPosition += 8;
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text('MOYENNE GÉNÉRALE:', 20, yPosition);
-      doc.text(`${generalAverage}/20`, 165, yPosition);
+        let yPosition = 20;
 
-      yPosition += 10;
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(10);
+        if (schoolSettings.logo) {
+          try {
+            doc.addImage(schoolSettings.logo, 'PNG', 15, yPosition, 30, 30);
+          } catch (e) {
+            console.log('Logo non chargé');
+          }
+        }
 
-      let appreciation = '';
-      const avg = parseFloat(generalAverage);
-      if (avg >= 16) appreciation = 'Excellent travail';
-      else if (avg >= 14) appreciation = 'Très bien';
-      else if (avg >= 12) appreciation = 'Bien';
-      else if (avg >= 10) appreciation = 'Assez bien';
-      else if (avg >= 8) appreciation = 'Passable';
-      else appreciation = 'Insuffisant';
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text(schoolSettings.nomEtablissement, 105, yPosition + 10, { align: 'center' });
 
-      doc.text(`Appréciation: ${appreciation}`, 20, yPosition);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        if (schoolSettings.adresse) {
+          doc.text(`${schoolSettings.adresse}, ${schoolSettings.ville}`, 105, yPosition + 17, { align: 'center' });
+        }
+        if (schoolSettings.telephone) {
+          doc.text(`Tél: ${schoolSettings.telephone}`, 105, yPosition + 22, { align: 'center' });
+        }
 
-      yPosition += 15;
-      doc.text(`Le Directeur`, 140, yPosition);
-      if (schoolSettings.directeur) {
-        doc.text(schoolSettings.directeur, 140, yPosition + 15);
-      }
+        yPosition += 35;
+        doc.setLineWidth(0.5);
+        doc.line(15, yPosition, 195, yPosition);
 
-      doc.setFontSize(8);
-      doc.text(`Document généré le ${new Date().toLocaleDateString('fr-FR')}`, 105, 285, { align: 'center' });
-    });
+        yPosition += 10;
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text('BULLETIN DE NOTES', 105, yPosition, { align: 'center' });
 
-    doc.save(`bulletin_${getClassName(selectedClass)}_T${selectedTrimester}.pdf`);
+        yPosition += 7;
+        doc.setFontSize(12);
+        doc.text(`${getClassName(selectedClass)} - Trimestre ${selectedTrimester}`, 105, yPosition, { align: 'center' });
+        doc.text(`Année scolaire: ${schoolSettings.anneeScolaireActuelle}`, 105, yPosition + 6, { align: 'center' });
+
+        yPosition += 15;
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Informations de l\'élève:', 15, yPosition);
+
+        yPosition += 6;
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Nom: ${student.nom}`, 15, yPosition);
+        doc.text(`Prénom: ${student.prenom}`, 105, yPosition);
+
+        yPosition += 6;
+        doc.text(`Matricule: ${student.matricule}`, 15, yPosition);
+        doc.text(`Date de naissance: ${new Date(student.dateNaissance).toLocaleDateString('fr-FR')}`, 105, yPosition);
+
+        yPosition += 10;
+        doc.setFont('helvetica', 'bold');
+        doc.text('Résultats scolaires:', 15, yPosition);
+
+        yPosition += 8;
+        doc.setFillColor(schoolSettings.couleurPrimaire || '#059669');
+        doc.rect(15, yPosition - 5, 180, 8, 'F');
+
+        doc.setTextColor(255, 255, 255);
+        doc.text('Matière', 20, yPosition);
+        doc.text('Coef', 120, yPosition);
+        doc.text('Moyenne', 160, yPosition);
+
+        yPosition += 5;
+        doc.setTextColor(0, 0, 0);
+        doc.setFont('helvetica', 'normal');
+
+        let totalPoints = 0;
+        let totalCoefficients = 0;
+
+        classSubjects.forEach(subject => {
+          const average = calculateAverage(student.id, subject.id, selectedTrimester);
+          const displayAverage = average || 'N/A';
+
+          if (yPosition > 260) {
+            doc.addPage();
+            yPosition = 20;
+          }
+
+          doc.text(subject.nom.substring(0, 40), 20, yPosition);
+          doc.text(subject.coefficient.toString(), 125, yPosition);
+          doc.text(displayAverage.toString(), 165, yPosition);
+
+          if (average) {
+            totalPoints += parseFloat(average) * subject.coefficient;
+            totalCoefficients += subject.coefficient;
+          }
+
+          yPosition += 6;
+        });
+
+        const generalAverage = totalCoefficients > 0 ? (totalPoints / totalCoefficients).toFixed(2) : 'N/A';
+
+        yPosition += 5;
+        doc.setLineWidth(0.5);
+        doc.line(15, yPosition, 195, yPosition);
+
+        yPosition += 8;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.text('MOYENNE GÉNÉRALE:', 20, yPosition);
+        doc.text(`${generalAverage}/20`, 165, yPosition);
+
+        yPosition += 10;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+
+        let appreciation = '';
+        const avg = parseFloat(generalAverage);
+        if (avg >= 16) appreciation = 'Excellent travail';
+        else if (avg >= 14) appreciation = 'Très bien';
+        else if (avg >= 12) appreciation = 'Bien';
+        else if (avg >= 10) appreciation = 'Assez bien';
+        else if (avg >= 8) appreciation = 'Passable';
+        else appreciation = 'Insuffisant';
+
+        doc.text(`Appréciation: ${appreciation}`, 20, yPosition);
+
+        yPosition += 15;
+        doc.text(`Le Directeur`, 140, yPosition);
+        if (schoolSettings.directeur) {
+          doc.text(schoolSettings.directeur, 140, yPosition + 15);
+        }
+
+        doc.setFontSize(8);
+        doc.text(`Document généré le ${new Date().toLocaleDateString('fr-FR')}`, 105, 285, { align: 'center' });
+      });
+
+      doc.save(`bulletin_${getClassName(selectedClass)}_T${selectedTrimester}.pdf`);
+      alert('Bulletins primaire générés avec succès !');
+    }
   };
 
   const classStudents = students.filter(s => selectedClass === '' || s.classeId === selectedClass);
