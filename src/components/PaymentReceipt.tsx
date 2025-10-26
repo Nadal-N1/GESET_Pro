@@ -36,31 +36,8 @@ export const PaymentReceipt: React.FC<PaymentReceiptProps> = ({
     return amount.toLocaleString('fr-FR');
   };
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header avec boutons d'action - Non imprimable */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center print:hidden">
-          <h2 className="text-xl font-semibold text-gray-900">Reçu de paiement</h2>
-          <div className="flex space-x-2">
-            <button
-              onClick={handlePrint}
-              className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-            >
-              <Printer className="h-4 w-4" />
-              <span>Imprimer</span>
-            </button>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <X className="h-6 w-6" />
-            </button>
-          </div>
-        </div>
-
-        {/* Contenu du reçu - Imprimable */}
-        <div className="p-8 print:p-12">
+  const ReceiptContent = () => (
+    <div className="p-8">
           {/* En-tête de l'établissement */}
           <div className="text-center mb-8 border-b-2 border-gray-300 pb-6">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -179,21 +156,15 @@ export const PaymentReceipt: React.FC<PaymentReceiptProps> = ({
             </p>
           </div>
 
-          {/* Signatures */}
-          <div className="grid grid-cols-2 gap-8 mt-12 pt-8 border-t border-gray-300">
-            <div>
-              <p className="text-sm font-semibold text-gray-700 mb-12">Le Caissier</p>
+          {/* Signature du Caissier */}
+          <div className="mt-12 pt-8 border-t border-gray-300">
+            <div className="max-w-sm">
+              <p className="text-sm font-semibold text-gray-700 mb-16">Signature du Caissier</p>
               <div className="border-t border-gray-400 pt-2">
                 <p className="text-sm text-gray-600">
                   {user.nom} {user.prenom}
                 </p>
                 <p className="text-xs text-gray-500">{formatDate(payment.datePaiement)}</p>
-              </div>
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-gray-700 mb-12">Le Directeur</p>
-              <div className="border-t border-gray-400 pt-2">
-                <p className="text-sm text-gray-600">{schoolSettings.directeur}</p>
               </div>
             </div>
           </div>
@@ -208,6 +179,39 @@ export const PaymentReceipt: React.FC<PaymentReceiptProps> = ({
             </p>
           </div>
         </div>
+  );
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        {/* Header avec boutons d'action - Non imprimable */}
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center print:hidden">
+          <h2 className="text-xl font-semibold text-gray-900">Reçu de paiement (2 exemplaires)</h2>
+          <div className="flex space-x-2">
+            <button
+              onClick={handlePrint}
+              className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            >
+              <Printer className="h-4 w-4" />
+              <span>Imprimer 2 exemplaires</span>
+            </button>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+        </div>
+
+        {/* Premier exemplaire */}
+        <ReceiptContent />
+
+        {/* Séparateur visible à l'écran uniquement */}
+        <div className="border-t-4 border-dashed border-gray-300 my-4 print:hidden"></div>
+
+        {/* Deuxième exemplaire */}
+        <ReceiptContent />
       </div>
     </div>
   );

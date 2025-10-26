@@ -5,8 +5,8 @@
 /* Print styles for receipts */
 @media print {
   @page {
-    size: A4;
-    margin: 1cm;
+    size: A5 landscape;
+    margin: 0.5cm;
   }
 
   /* Hide non-printable elements */
@@ -24,6 +24,11 @@
   /* Override any background colors that might not print */
   body {
     background: white !important;
+  }
+
+  /* Print 2 copies - duplicate content */
+  .bg-white.rounded-lg {
+    page-break-after: always;
   }
 
   /* Ensure text is black for printing */
@@ -54,5 +59,61 @@
   /* Keep green color for total */
   .text-green-600 {
     color: #16a34a !important;
+  }
+
+  /* Reduce font sizes for A5 format */
+  h1 {
+    font-size: 1.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.25rem !important;
+  }
+
+  h3 {
+    font-size: 0.875rem !important;
+  }
+
+  .text-2xl {
+    font-size: 1.25rem !important;
+  }
+
+  .text-xl {
+    font-size: 1rem !important;
+  }
+
+  .text-lg {
+    font-size: 0.875rem !important;
+  }
+
+  /* Reduce padding for A5 */
+  .p-8 {
+    padding: 1rem !important;
+  }
+
+  .p-4 {
+    padding: 0.5rem !important;
+  }
+
+  .px-6 {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .py-4 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .mb-8 {
+    margin-bottom: 1rem !important;
+  }
+
+  .mb-12 {
+    margin-bottom: 2rem !important;
+  }
+
+  .mt-12 {
+    margin-top: 1.5rem !important;
   }
 }
