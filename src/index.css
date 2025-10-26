@@ -61,6 +61,14 @@
     color: #16a34a !important;
   }
 
+  /* Ensure images (logos) print correctly */
+  img {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    max-width: 100% !important;
+    page-break-inside: avoid !important;
+  }
+
   /* Reduce font sizes for A5 format */
   h1 {
     font-size: 1.5rem !important;

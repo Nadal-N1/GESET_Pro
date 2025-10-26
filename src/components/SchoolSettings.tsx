@@ -376,34 +376,46 @@ export const SchoolSettings: React.FC = () => {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Logo de l'établissement</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                      handleInputChange('logo', reader.result as string);
-                    };
-                    reader.readAsDataURL(file);
-                  }
-                }}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
-              />
-              {settings.logo && (
-                <button
-                  type="button"
-                  onClick={() => handleInputChange('logo', '')}
-                  className="mt-2 text-xs text-red-600 hover:text-red-800"
-                >
-                  Supprimer le logo
-                </button>
-              )}
-              <p className="text-xs text-gray-500 mt-1">
-                Sélectionnez une image depuis votre galerie (formats: JPG, PNG, etc.)
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Logo de l'établissement
+                <span className="ml-2 text-xs text-gray-500">(Apparaît sur les bulletins et reçus)</span>
+              </label>
+              <div className="flex items-center space-x-4">
+                {settings.logo && (
+                  <div className="flex-shrink-0">
+                    <img src={settings.logo} alt="Logo actuel" className="h-20 w-20 object-contain border border-gray-200 rounded" />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          handleInputChange('logo', reader.result as string);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+                  />
+                  {settings.logo && (
+                    <button
+                      type="button"
+                      onClick={() => handleInputChange('logo', '')}
+                      className="mt-2 text-xs text-red-600 hover:text-red-800 font-medium"
+                    >
+                      Supprimer le logo
+                    </button>
+                  )}
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Recommandation : Image carrée, format PNG ou JPG, taille maximale 500KB
               </p>
             </div>
           </div>
@@ -412,14 +424,28 @@ export const SchoolSettings: React.FC = () => {
 
       {/* Aperçu */}
       <div className="bg-white rounded-xl shadow-md p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Aperçu</h2>
-        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Aperçu sur les documents</h2>
+        <div className="border border-gray-200 rounded-lg p-6 bg-gray-50">
+          <div className="flex items-start justify-between mb-4 border-b-2 border-gray-300 pb-4">
+            {settings.logo && (
+              <div className="flex-shrink-0 mr-4">
+                <img src={settings.logo} alt="Logo" className="h-20 w-20 object-contain" />
+              </div>
+            )}
+            <div className="flex-1 text-center">
+              <h3 className="text-xl font-bold text-gray-900 mb-1">{settings.nomEtablissement}</h3>
+              {settings.adresse && <p className="text-xs text-gray-600">{settings.adresse}</p>}
+              <p className="text-xs text-gray-600">{settings.ville}, {settings.region}</p>
+              {settings.telephone && <p className="text-xs text-gray-600">Tél: {settings.telephone}</p>}
+            </div>
+            {settings.logo && (
+              <div className="flex-shrink-0 ml-4 w-20"></div>
+            )}
+          </div>
           <div className="text-center">
             <div className="flex justify-center mb-3">
-              {settings.logo ? (
-                <img src={settings.logo} alt="Logo" className="h-16 w-16 object-contain" />
-              ) : (
-                <div 
+              {!settings.logo && (
+                <div
                   className="p-3 rounded-full"
                   style={{ backgroundColor: settings.couleurPrimaire + '20' }}
                 >
@@ -427,15 +453,12 @@ export const SchoolSettings: React.FC = () => {
                 </div>
               )}
             </div>
-            <h3 className="text-xl font-bold text-gray-900">{settings.nomEtablissement || 'Nom de l\'établissement'}</h3>
+            <p className="text-lg font-bold text-gray-800 uppercase mb-2">
+              {settings.logo ? 'BULLETIN DE NOTES / REÇU DE PAIEMENT' : 'Ajoutez un logo pour le voir apparaître ici'}
+            </p>
             {settings.devise && (
-              <p className="text-sm text-gray-600 italic">"{settings.devise}"</p>
+              <p className="text-sm text-gray-600 italic mb-2">"{settings.devise}"</p>
             )}
-            <div className="mt-2 text-sm text-gray-600">
-              <p>{settings.adresse && `${settings.adresse}, `}{settings.ville} - {settings.region}</p>
-              {settings.telephone && <p>Tél: {settings.telephone}</p>}
-              {settings.email && <p>Email: {settings.email}</p>}
-            </div>
             <div className="mt-3 text-xs text-gray-500">
               <p>Année scolaire: {settings.anneeScolaireActuelle} - Trimestre {settings.trimestreActuel}</p>
               {settings.directeur && <p>Directeur: {settings.directeur}</p>}

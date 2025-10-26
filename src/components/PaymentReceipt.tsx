@@ -39,23 +39,44 @@ export const PaymentReceipt: React.FC<PaymentReceiptProps> = ({
   const ReceiptContent = () => (
     <div className="p-8">
           {/* En-tête de l'établissement */}
-          <div className="text-center mb-8 border-b-2 border-gray-300 pb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              {schoolSettings.nomEtablissement}
-            </h1>
-            <p className="text-sm text-gray-600">{schoolSettings.adresse}</p>
-            <p className="text-sm text-gray-600">
-              {schoolSettings.ville}, {schoolSettings.region}
-            </p>
-            <p className="text-sm text-gray-600">
-              Tél: {schoolSettings.telephone}
-              {schoolSettings.email && ` | Email: ${schoolSettings.email}`}
-            </p>
-            {schoolSettings.numeroAutorisation && (
-              <p className="text-xs text-gray-500 mt-1">
-                Autorisation N° {schoolSettings.numeroAutorisation}
-              </p>
-            )}
+          <div className="mb-8 border-b-2 border-gray-300 pb-6">
+            <div className="flex items-start justify-between">
+              {/* Logo */}
+              {schoolSettings.logo && (
+                <div className="flex-shrink-0 mr-4">
+                  <img
+                    src={schoolSettings.logo}
+                    alt="Logo"
+                    className="h-20 w-20 object-contain"
+                  />
+                </div>
+              )}
+
+              {/* Informations de l'établissement */}
+              <div className="flex-1 text-center">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  {schoolSettings.nomEtablissement}
+                </h1>
+                <p className="text-sm text-gray-600">{schoolSettings.adresse}</p>
+                <p className="text-sm text-gray-600">
+                  {schoolSettings.ville}, {schoolSettings.region}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Tél: {schoolSettings.telephone}
+                  {schoolSettings.email && ` | Email: ${schoolSettings.email}`}
+                </p>
+                {schoolSettings.numeroAutorisation && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Autorisation N° {schoolSettings.numeroAutorisation}
+                  </p>
+                )}
+              </div>
+
+              {/* Espace vide pour équilibrer */}
+              {schoolSettings.logo && (
+                <div className="flex-shrink-0 ml-4 w-20"></div>
+              )}
+            </div>
           </div>
 
           {/* Titre du document */}
