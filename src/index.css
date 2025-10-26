@@ -9,20 +9,50 @@
     margin: 1cm;
   }
 
-  body * {
-    visibility: hidden;
-  }
-
-  .print\:block,
-  .print\:block * {
-    visibility: visible;
-  }
-
+  /* Hide non-printable elements */
   .print\:hidden {
     display: none !important;
   }
 
-  .print\:p-12 {
-    padding: 3rem !important;
+  /* Ensure colors print correctly */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Override any background colors that might not print */
+  body {
+    background: white !important;
+  }
+
+  /* Ensure text is black for printing */
+  .text-gray-900,
+  .text-gray-800,
+  .text-gray-700,
+  .text-gray-600,
+  .text-gray-500,
+  .text-gray-400 {
+    color: black !important;
+  }
+
+  /* Ensure borders are visible */
+  .border,
+  .border-t,
+  .border-b,
+  .border-2,
+  .border-t-2 {
+    border-color: black !important;
+  }
+
+  /* Keep background colors for tables */
+  .bg-gray-50,
+  .bg-gray-100 {
+    background-color: #f9fafb !important;
+  }
+
+  /* Keep green color for total */
+  .text-green-600 {
+    color: #16a34a !important;
   }
 }
